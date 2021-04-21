@@ -1,0 +1,8 @@
+numpy
+pandas
+sqlalchemy
+psycopg2
+jupyterlab
+jupyter
+notebook
+tensorflow
