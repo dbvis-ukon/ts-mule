@@ -86,7 +86,59 @@ class MatrixProfileSegmentation(AbstractSegmentation):
             
         return segmentation_mask
 
+    
+    @staticmethod
+    def _segment_with_bins(time_series_sample, m=4, k=10, distance_method="max"):
+        """The methods divides the matrix profile distance into bins. 
         
+        For shared points between two windows, it can minimize or maximize the nearest distance.
+
+        Args:
+            time_series_sample (ndarray): Time series data
+            m (int, optional): Windows Size of subsequent to do matrix profile. Defaults to 4.
+            k (int, optional): Initial max number of partitions. The final result is possiblily smaller than k paritions. Defaults to 10.
+            distance_method (str, optional): Minimize or maximize the shared points between two windows. Options can be `min`, `max`. Defaults to "max".
+
+        Returns:
+            segmentation_mask: the segmentation mask of a time series. It has the same shape with time series sample.
+        """
+        n_steps, n_features = time_series_sample.shape
+        segmentation_mask = np.zeros_like(time_series_sample)
+        seg_start = 0
+        for feature in range(n_features):
+            ts = time_series_sample[:, feature]
+            
+            # Get Matrix Profile Distance
+            mp = stumpy.stump(ts, m)
+            mp_d = mp[:, 0].astype(float)
+            mp_d_min = min(0, mp_d.min())
+            mp_d_max = mp_d.max()
+
+            # Create bins of distance from min to max
+            # segments number
+            #   lower: more similar -> motif classes
+            #   highest: more dissimilar -> discord classes
+            bins = np.linspace(mp_d_min, mp_d_max, k)
+            segments = np.digitize(mp_d, bins) - 1  # -1 to make start from 0
+            segments = seg_start + segments 
+            
+            # unpack segments to time series
+            #   Notice: For the shared points between two windows, the segment can be maximized, or minimized   
+            if distance_method == "max":
+                init_v = min(segments)
+                _fn = np.fmax
+            if distance_method == "min":
+                init_v = max(segments)
+                _fn = np.fmin
+
+            seg_m = np.full(n_steps, init_v)
+            for i, s in enumerate(segments):
+                seg_m[i:i+m] = _fn(seg_m[i:i+m], s)
+            
+            segmentation_mask[:, feature] = seg_m
+            seg_start = max(seg_m) + 1
+        return segmentation_mask
+
     def segment(self, time_series_sample, segmentation_method='slopes'):
         """ Time series instance segmentation into segments.
         
@@ -97,7 +149,15 @@ class MatrixProfileSegmentation(AbstractSegmentation):
         
         if segmentation_method == 'slopes':
             return self._segment_with_slopes(time_series_sample)
-        
+        if segmentation_method == "bins-max":
+            return self._segment_with_bins(time_series_sample, 
+                                           m=self.win_length, 
+                                           k = self.partitions, )
+        if segmentation_method == "bins-min":
+            return self._segment_with_bins(time_series_sample, 
+                                           m=self.win_length, 
+                                           k = self.partitions, 
+                                           distance_method="min")
         
 class SAXSegmentation(AbstractSegmentation):
     """ SAX Segmentation using a  on every feature."""
