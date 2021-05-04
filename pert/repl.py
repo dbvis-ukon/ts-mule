@@ -10,11 +10,11 @@ def _reshape_x(x, segments):
     return x, segments
 
 
-def zeros(x, **_kwargs):
+def zeros(x, *_args, **_kwargs):
     return np.zeros_like(x)
 
 
-def local_mean(x, segments, **_kwargs):
+def local_mean(x, segments, *_args, **_kwargs):
     x, segments = _reshape_x(x, segments)
     _, features = x.shape
 
@@ -27,18 +27,18 @@ def local_mean(x, segments, **_kwargs):
     return r
 
 
-def global_mean(x, **_kwargs):
+def global_mean(x, *_args, **_kwargs):
     r = local_mean(x, np.ones_like(x))
     return r
 
 
-def local_noise(x, x_segmented, segments, **_kwargs):
+def local_noise(x, x_segmented, segments, *_args, **_kwargs):
     pass
 
 
-def global_noise(x, segments, **_kwargs):
+def global_noise(x, segments, *_args, **_kwargs):
     pass
 
 
-def reference_set(ref_set, segments, **_kwargs):
+def reference_set(ref_set, segments, *_args, **_kwargss):
     pass
