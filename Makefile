@@ -3,7 +3,7 @@
 clean:
 	find . -name '*.py[co]' -delete
 	rm -rf *.lock *.dirlock worker-* build *.egg-info .pytest_* coverage-report .coverage*
-	rm -rf pgdata
+	rm -rf pgdata */__pycache*
 
 virtualenv:
 	rm -rf venv/
