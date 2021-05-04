@@ -10,10 +10,6 @@ from sklearn import metrics
 from sklearn.base import BaseEstimator
 from sklearn.model_selection import train_test_split
 
-from ..perturbation import (TimeSeriesPerturbation, 
-                            SyncTimeSlicer,
-                            ASyncTimeSlicer)
-
 
 class XAIModels:
     """Supporting Estimators for XAI.

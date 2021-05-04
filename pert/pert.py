@@ -1,11 +1,9 @@
 """Module to generate samples through perturbation."""
-from typing import Generator
 import numpy as np
 from scipy import stats
 from abc import ABC, abstractmethod
 
-from pert import repl
-
+from . import repl
 
 class AbstractPerturbation(ABC):
     """Abstract Pertubation with abstract methods."""
@@ -121,7 +119,7 @@ class Perturbation(AbstractPerturbation):
         for _ in range(n_samples):
             yield from cls.get_sample(x, segm, r, p_off)
     
-    def perturb(self, ts, segments) -> Generator:
+    def perturb(self, ts, segments):
         """Perturb and generate sample sets from given time series and its segmentation.
 
         Args:
