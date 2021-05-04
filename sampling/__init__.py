@@ -1,6 +1,6 @@
 """Init module perturbation."""
-from .sampling import MatrixProfileSegmentation, SAXSegmentation
-from .pert import Perturbation
+from .segment import MatrixProfileSegmentation, SAXSegmentation
+from .perturb import Perturbation
 
 __all__ = ['Perturbation', 
            'MatrixProfileSegmentation',

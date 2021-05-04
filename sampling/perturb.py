@@ -3,7 +3,7 @@ import numpy as np
 from scipy import stats
 from abc import ABC, abstractmethod
 
-from . import repl
+from . import replace as repl
 
 class AbstractPerturbation(ABC):
     """Abstract Pertubation with abstract methods."""

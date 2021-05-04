@@ -1,8 +1,9 @@
+import pytest
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
-import pytest
-from pert.sampling import MatrixProfileSegmentation
+
+from sampling import MatrixProfileSegmentation
 
 url = "https://zenodo.org/record/4273921/files/STUMPY_Basics_steamgen.csv?download=1"
 df = pd.read_csv(url)
@@ -12,7 +13,7 @@ ts2 = df["drum pressure"][:n]
 mts = np.stack([ts, ts2], axis=1)
 
 
-@pytest.skip("Manual test.")
+@pytest.mark.skip("Manual test.")
 def test_segment_max():
     mseg = MatrixProfileSegmentation(partitions=10, win_length=4)
     

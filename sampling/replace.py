@@ -2,7 +2,7 @@
 import numpy as np
 
 def _reshape_x(x, segments):
-    assert (x.shape == segments.shape,
+    assert x.shape == segments.shape, (
             f"{x.shape} does not match with segments shape {segments.shape}")
     if len(x.shape) == 1:
         x = x.reshape(-1, 1)

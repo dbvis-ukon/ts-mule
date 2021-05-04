@@ -30,9 +30,9 @@ test:
 	@echo
 	python -m pytest \
 		-v \
-		--cov=i-metro \
+		--cov=sampling \
 		--cov-report=term \
-		--cov-report=html:coverage-report \
+		--cov-report=html:.coverage-report \
 		tests/
 zipfile:
 	find . -not \
