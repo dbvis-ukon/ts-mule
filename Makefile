@@ -34,6 +34,10 @@ test:
 		--cov-report=term \
 		--cov-report=html:.coverage-report \
 		tests/
+		
+simple-test:
+		python -m pytest tests/
+
 zipfile:
 	find . -not \
 		-name env -o \

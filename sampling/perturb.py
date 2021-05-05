@@ -40,7 +40,7 @@ class Perturbation(AbstractPerturbation):
                 Defaults to "zeros".
             n_samples (int, optional): [description]. Defaults to 10.
         """
-        self.p_off = p_off, 
+        self.p_off = p_off
         self.repl_method = method
         self.n_samples = n_samples
 
@@ -67,11 +67,13 @@ class Perturbation(AbstractPerturbation):
         return mask
 
     @staticmethod
-    def _get_similarity(x, z, method="pearson"):
+    def _get_similarity(x, z, method="kendalltau"):
         # Calculate pi/similarity between x and y:
-        if method == "pearson":
-            pi, _ = stats.pearsonr(x.ravel(), z.ravel())
-
+        pi = 1
+        if method in ["pearsonr", "spearmanr", "kendalltau"]:
+            fn = getattr(stats, method)
+            pi, _ = fn(x.ravel(), z.ravel())
+            
         return pi
 
     @classmethod
@@ -113,7 +115,7 @@ class Perturbation(AbstractPerturbation):
         Yields:
             Generator: tuples of (new sample, on/off segments, similarity to original)
         """
-        fn = eval(f"repl.{replace_method}")
+        fn = getattr(repl, replace_method)
         r = fn(x, segm)
         
         for _ in range(n_samples):

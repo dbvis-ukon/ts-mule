@@ -28,10 +28,9 @@ class AbstractSegmentation(ABC):
 class MatrixProfileSegmentation(AbstractSegmentation):
     """ Matrix Profile Segmentation using a matrix profile on every feature."""
 
-    def __init__(self, partitions, win_length=-1):
+    def __init__(self, partitions, win_length=3):
         self.partitions = partitions
-        self.win_length = win_length
-
+        self.win_length = max(3, win_length)
 
     def _segment_with_slopes(self, time_series_sample):
         """ Time series instance segmentation into segments.
@@ -56,7 +55,6 @@ class MatrixProfileSegmentation(AbstractSegmentation):
             
         # set first window index to 0
         win_idx = 0
-        
         # create a matrix profile for every feature
         for feature in range(n_features):
             
@@ -139,21 +137,21 @@ class MatrixProfileSegmentation(AbstractSegmentation):
             seg_start = max(seg_m) + 1
         return segmentation_mask
 
-    def segment(self, time_series_sample, segmentation_method='slopes'):
+    def segment(self, time_series_sample, segment_method='slopes'):
         """ Time series instance segmentation into segments.
         
         Currently only with slopes but more is planned.
 
         :param time_series_sample: (np.array) time series must be (n_steps, n_features)
         """
-        
-        if segmentation_method == 'slopes':
+        time_series_sample = time_series_sample.astype(float)
+        if segment_method == 'slopes':
             return self._segment_with_slopes(time_series_sample)
-        if segmentation_method == "bins-max":
+        if segment_method == "bins-max":
             return self._segment_with_bins(time_series_sample, 
                                            m=self.win_length, 
                                            k = self.partitions, )
-        if segmentation_method == "bins-min":
+        if segment_method == "bins-min":
             return self._segment_with_bins(time_series_sample, 
                                            m=self.win_length, 
                                            k = self.partitions, 
@@ -166,7 +164,7 @@ class SAXSegmentation(AbstractSegmentation):
         self.partitions = partitions
         self.win_length = win_length
 
-    def segment(self, time_series_sample):
+    def segment(self, time_series_sample, **_kwargs):
         """ Time series instance segmentation into segments.
         
         Idea:
