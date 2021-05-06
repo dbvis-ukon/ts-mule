@@ -1,7 +1,7 @@
 """Init module perturbation."""
-from .lime import LimeTS, LimeBase, Kernels
+from .lime import LIMETS, LIMEBase, Kernels
 
-__all__ = ['BaseLIME', 
-           'LimeTS',
+__all__ = ['LIMEBase', 
+           'LIMETS',
            'Kernels'
            ]

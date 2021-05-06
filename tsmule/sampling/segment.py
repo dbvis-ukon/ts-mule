@@ -4,12 +4,11 @@ import numpy as np
 
 from abc import ABC, abstractmethod
 
-from tslearn.piecewise import PiecewiseAggregateApproximation
-from tslearn.piecewise import SymbolicAggregateApproximation
+from pyts.approximation import SymbolicAggregateApproximation
 
 
 class AbstractSegmentation(ABC):
-    """Abstract Segmentation with abstract methods."""
+    """ Abstract Segmentation with abstract methods. """
 
     @abstractmethod
     def __init__(self):
@@ -20,26 +19,38 @@ class AbstractSegmentation(ABC):
     def segment(self, time_series_sample):
         """ Time series instance segmentation into segments.
 
-        :param time_series_sample: (np.array) time series must be (n_steps, n_features)
+        Args:
+            time_series_sample (ndarray): Time series data (n_steps, n_features)
+            
+        Returns:
+            segmentation_mask: the segmentation mask of a time series. It has the same shape with time series sample.
         """
         pass
 
 
 class MatrixProfileSegmentation(AbstractSegmentation):
-    """ Matrix Profile Segmentation using a matrix profile on every feature."""
+    """ Matrix Profile Segmentation using a matrix profile on every feature. """
 
-    def __init__(self, partitions, win_length=3):
+    def __init__(self, partitions, win_length=-1):
         self.partitions = partitions
-        self.win_length = max(3, win_length)
+        self.win_length = win_length
 
-    def _segment_with_slopes(self, time_series_sample):
+
+    def _segment_with_slopes(self, time_series_sample, m=4, k=10, profile='min'):
         """ Time series instance segmentation into segments.
         
         Idea:
          - Take the matrix profile of a time series and sort the distances.
          - Calculate the slope of this new matrix profile and take partition largest ones.
-
-        :param time_series_sample: (np.array) time series must be (n_steps, n_features)
+         
+        Args:
+            time_series_sample (ndarray): Time series data (n_steps, n_features)
+            m (int, optional): Windows Size of subsequent to do matrix profile. Defaults to 4.
+            k (int, optional): Initial max number of partitions. The final result is possiblily smaller than k paritions. Defaults to 10.
+            profile (str, optional): Start the profile either at the minimas or the maximas ('min', 'max'). Defaults to 'min'.
+            
+        Returns:
+            segmentation_mask: the segmentation mask of a time series. It has the same shape with time series sample.
         """
         # create segmentation mask as the time series
         segmentation_mask = np.zeros_like(time_series_sample)
@@ -48,13 +59,14 @@ class MatrixProfileSegmentation(AbstractSegmentation):
         n_steps, n_features = time_series_sample.shape
         
         # set matrix profile window length
-        mp_win_len = self.win_length
+        mp_win_len = m
         if mp_win_len == -1:
             # calculate partitions based matrix profile length
-            mp_win_len = int(n_steps / self.partitions)
+            mp_win_len = int(n_steps / k)
             
         # set first window index to 0
         win_idx = 0
+        
         # create a matrix profile for every feature
         for feature in range(n_features):
             
@@ -68,7 +80,7 @@ class MatrixProfileSegmentation(AbstractSegmentation):
             # calculate the slopes for every matrix profile step
             slopes = np.array([(mp_sorted[i] - mp_sorted[i + 1]) / (i - (i + 1)) for i in range(len(mp_sorted) - 1)])
             # take amount of partitions of the largest slopes
-            slopes_sorted = np.argsort(slopes)[::-1][:self.partitions]
+            slopes_sorted = np.argsort(slopes)[::-1][:k]
             # retrieve indeces of original time series
             partitions_idx_sorted = sorted([mp_idx_sorted[part] for part in slopes_sorted])
             # add end of time series
@@ -81,18 +93,20 @@ class MatrixProfileSegmentation(AbstractSegmentation):
                 segmentation_mask[start:end, feature] = win_idx
                 win_idx += 1
                 start = idx
+                
+            win_idx += 1
             
         return segmentation_mask
 
     
     @staticmethod
-    def _segment_with_bins(time_series_sample, m=4, k=10, distance_method="max"):
-        """The methods divides the matrix profile distance into bins. 
+    def _segment_with_bins(time_series_sample, m=4, k=10, distance_method='max'):
+        """ The methods divides the matrix profile distance into bins. 
         
         For shared points between two windows, it can minimize or maximize the nearest distance.
 
         Args:
-            time_series_sample (ndarray): Time series data
+            time_series_sample (ndarray): Time series data (n_steps, n_features)
             m (int, optional): Windows Size of subsequent to do matrix profile. Defaults to 4.
             k (int, optional): Initial max number of partitions. The final result is possiblily smaller than k paritions. Defaults to 10.
             distance_method (str, optional): Minimize or maximize the shared points between two windows. Options can be `min`, `max`. Defaults to "max".
@@ -122,10 +136,10 @@ class MatrixProfileSegmentation(AbstractSegmentation):
             
             # unpack segments to time series
             #   Notice: For the shared points between two windows, the segment can be maximized, or minimized   
-            if distance_method == "max":
+            if distance_method == 'max':
                 init_v = min(segments)
                 _fn = np.fmax
-            if distance_method == "min":
+            if distance_method == 'min':
                 init_v = max(segments)
                 _fn = np.fmin
 
@@ -137,34 +151,49 @@ class MatrixProfileSegmentation(AbstractSegmentation):
             seg_start = max(seg_m) + 1
         return segmentation_mask
 
-    def segment(self, time_series_sample, segment_method='slopes'):
+    def segment(self, time_series_sample, segmentation_method='slopes'):
         """ Time series instance segmentation into segments.
         
         Currently only with slopes but more is planned.
 
-        :param time_series_sample: (np.array) time series must be (n_steps, n_features)
+        Args:
+            time_series_sample (ndarray): Time series data (n_steps, n_features)
+            
+        Returns:
+            segmentation_mask: the segmentation mask of a time series. It has the same shape with time series sample.
         """
-        time_series_sample = time_series_sample.astype(float)
-        if segment_method == 'slopes':
-            return self._segment_with_slopes(time_series_sample)
-        if segment_method == "bins-max":
+        
+        if segmentation_method == 'slopes-min':
+            return self._segment_with_slopes(time_series_sample,
+                                             m=self.win_length, 
+                                             k=self.partitions, 
+                                             profile='min')
+        if segmentation_method == 'slopes-max':
+            return self._segment_with_slopes(time_series_sample,
+                                             m=self.win_length, 
+                                             k=self.partitions, 
+                                             profile='max')
+        
+        if segmentation_method == 'bins-max':
             return self._segment_with_bins(time_series_sample, 
                                            m=self.win_length, 
-                                           k = self.partitions, )
-        if segment_method == "bins-min":
+                                           k=self.partitions, 
+                                           distance_method='max')
+        if segmentation_method == 'bins-min':
             return self._segment_with_bins(time_series_sample, 
                                            m=self.win_length, 
-                                           k = self.partitions, 
-                                           distance_method="min")
+                                           k=self.partitions, 
+                                           distance_method='min')
         
 class SAXSegmentation(AbstractSegmentation):
     """ SAX Segmentation using a  on every feature."""
 
-    def __init__(self, partitions, win_length=-1):
-        self.partitions = partitions
-        self.win_length = win_length
 
-    def segment(self, time_series_sample, **_kwargs):
+    def __init__(self, partitions):
+        self.partitions = partitions
+
+
+    def segment(self, time_series_sample):
         """ Time series instance segmentation into segments.
         
         Idea:
@@ -172,15 +201,17 @@ class SAXSegmentation(AbstractSegmentation):
          - Use SAX to transform data.
          - Use transformed data to identify windows.
 
-        :param time_series_sample: (np.array) time series must be (n_steps, n_features)
+        Args:
+            time_series_sample (ndarray): Time series data (n_steps, n_features)
+            
+        Returns:
+            segmentation_mask: the segmentation mask of a time series. It has the same shape with time series sample.
         """
         # create segmentation mask as the time series
         segmentation_mask = np.zeros_like(time_series_sample)
         
-        # set segements to the partition amount
-        # set SAX symbols amount to half of the segments
-        n_paa_segments = self.partitions
-        n_sax_symbols = int(n_paa_segments / 2)
+        # set partition amount
+        partitions = self.partitions
 
         # extract steps and features
         _, n_features = time_series_sample.shape
@@ -190,20 +221,26 @@ class SAXSegmentation(AbstractSegmentation):
 
         # create a sax transformation for every feature
         for feature in range(n_features):
+            
+            n_bins = 3
 
-            # create SAX symbols for the previously set parameters
-            sax = SymbolicAggregateApproximation(n_segments=n_paa_segments, alphabet_size_avg=n_sax_symbols)
-            # do the SAX transform for the data
-            sax_transformation = sax.fit_transform(time_series_sample[:, feature].reshape(1, -1))
-            # inverse the SAX transformation to find the windows
-            sax_transformation_inv = sax.inverse_transform(sax_transformation)
+            internal_win_idx = 0
+            while internal_win_idx < partitions * 9 / 10 or (internal_win_idx > partitions * 11 / 10 and internal_win_idx < partitions * 13 / 10):
 
-            # create the segmentation mask
-            old_value = 0
-            for i, value in enumerate(sax_transformation_inv.reshape(-1)):
-                if old_value != 0 and value != old_value:
-                    win_idx += 1
-                segmentation_mask[i, feature] = win_idx
-                old_value = value
+                sax = SymbolicAggregateApproximation(n_bins=n_bins, strategy='quantile', alphabet='ordinal')
+                sax_transformation = sax.fit_transform(time_series_sample[:, feature].reshape(1, -1))
+
+                internal_win_idx = 0
+                old_value = None
+                for i, value in enumerate(sax_transformation.reshape(-1)):
+                    if old_value and value != old_value:
+                        win_idx += 1
+                        internal_win_idx += 1
+                    segmentation_mask[i, feature] = win_idx
+                    old_value = value
+
+                n_bins += 1
+                
+            win_idx += 1
 
         return segmentation_mask

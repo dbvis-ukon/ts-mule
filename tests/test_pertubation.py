@@ -1,6 +1,6 @@
 import numpy as np
 
-from tsmule import Perturbation
+from tsmule.sampling.perturb import Perturbation
 
 
 ts = np.array([[1, 3, 9, 5, 4, 6, 7, 5, 9, 2, 6, 6, 7, 4, 0, 0]]).T

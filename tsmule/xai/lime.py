@@ -11,7 +11,6 @@ from sampling import MatrixProfileSegmentation
 
 class Kernels:
     """Kernels for perturbation-based XAI method.
-
     Notice that we use scikit-learn linear-regression kernels. 
     There are two main fitting types in fitting the model: fit, and partial fit. 
     Fit means we see all samples as a whole, while partial fit (or online learning with mini batches) is 
@@ -41,7 +40,7 @@ class AbstractXAI(ABC):
     def explain(self, x, predict_fn, **kwargs):
         pass
 
-class LimeBase(AbstractXAI):
+class LIMEBase(AbstractXAI):
     """Module of LIME in explaining a model."""
     
     def __init__(self, kernel=None, sampler=None, segmenter=None) -> None:
@@ -90,7 +89,7 @@ class LimeBase(AbstractXAI):
         
         return self.coef
 
-class LimeTS(LimeBase):
+class LIMETS(LIMEBase):
     def __init__(self, 
                  kernel=None, 
                  segmenter=None, 

@@ -1,4 +1,4 @@
-"""Init module perturbation."""
+""" Init module perturbation. """
 from .segment import MatrixProfileSegmentation, SAXSegmentation
 from .perturb import Perturbation
 

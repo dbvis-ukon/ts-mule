@@ -3,7 +3,7 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 
-from tsmule import MatrixProfileSegmentation
+from tsmule.sampling.segment import MatrixProfileSegmentation
 
 url = 'https://zenodo.org/record/4273921/files/STUMPY_Basics_steamgen.csv?download=1'
 df = pd.read_csv(url)
