@@ -1,5 +1,10 @@
 import numpy as np
-from sampling import Perturbation
+
+import os
+import sys
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../src')))
+
+from tsmule.sampling.perturb import Perturbation
 
 
 ts = np.array([[1, 3, 9, 5, 4, 6, 7, 5, 9, 2, 6, 6, 7, 4, 0, 0]]).T

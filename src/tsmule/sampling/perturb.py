@@ -29,15 +29,14 @@ class AbstractPerturbation(ABC):
 
 
 class Perturbation(AbstractPerturbation):
-    """Base Perturbation module."""
-    def __init__(self, p_off=0.5, method="zeros", n_samples=10):
-        """[summary]
-
+    """ Base Perturbation module. """
+    def __init__(self, p_off=0.5, method='zeros', n_samples=10):
+        """
         Args:
             p_off (float, optional): Probability of disabling a segment. Default is 0.5
             method (str, optional): Methods to replace parts of segmentation, including:
                 'zeros | global_mean | local_mean'
-                Defaults to "zeros".
+                Defaults to 'zeros'.
             n_samples (int, optional): [description]. Defaults to 10.
         """
         self.p_off = p_off
@@ -102,8 +101,8 @@ class Perturbation(AbstractPerturbation):
         yield new_x, z_prime, pi
     
     @classmethod
-    def get_samples(cls, x, segm, replace_method="zeros", p_off=0.5, n_samples=10):    
-        """Perturb and generate sample sets from given time series and its segmentation.
+    def get_samples(cls, x, segm, replace_method='zeros', p_off=0.5, n_samples=10):    
+        """ Perturb and generate sample sets from given time series and its segmentation.
 
         Args:
             ts (np.ndarray): A time series with shape (n_steps, n_features)
@@ -122,7 +121,7 @@ class Perturbation(AbstractPerturbation):
             yield from cls.get_sample(x, segm, r, p_off)
     
     def perturb(self, ts, segments):
-        """Perturb and generate sample sets from given time series and its segmentation.
+        """ Perturb and generate sample sets from given time series and its segmentation.
 
         Args:
             ts (np.ndarray): A time series with shape (n_steps, n_features)
