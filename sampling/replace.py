@@ -45,10 +45,15 @@ def reference_set(ref_set, segments, *_args, **_kwargss):
 
 def inverse_max(x, *_args, **_kwargs):
     _, n_features = x.shape
-    v = x.max(axis=0)
-    r = v.reshape(-1, n_features) - x
+    max_v = x.max(axis=0).reshape(-1, n_features)
+    r = max_v - x
     return r
 
+def inverse_mean(x):
+    mean_v = global_mean(x)
+    r = mean_v - x
+    return r
+    
 def random(x, *_args, **_kwargs):
     r = np.random.rand(*x.shape)
     return r

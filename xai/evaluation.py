@@ -1,9 +1,11 @@
 """Evaluation for different explainers."""
+import copy
 import numpy as np
 import pandas as pd
 from biokit.viz import corrplot
 
 from . import LimeBase
+from sampling import replace as repl
 
 def mask_percentile(x, upper_percentile=90, lower_percentile=10):
     # 1/on/keep and 0/off/disabled
@@ -34,41 +36,51 @@ def mask_random(m, method="all"):
         _m = _m.ravel()
         np.random.shuffle(_m)
         _m = _m.reshape(m.shape)
-    else:
+    if method == "each":
         # inplace shuffle for each feature
         _ = np.apply_along_axis(np.random.shuffle, axis=0, arr=_m)
     return _m
 
-def perturb_instance(x, m, r):
+def perturb_instance(x, m, replace_method="zeros"):
+    """Perturb and instance in percentile 90/10. 
+
+    Args:
+        x (ndarray): time series with shape (n_steps, features)
+        m (ndarray): a masking of 1s and 0s of x in shape of (n_steps, features)
+        replace_method (str, optional): Replacement methods to replace disabled points. Defaults to "zeros".
+            - All methods is built-in functions in sampling.replace module.
+
+    Returns:
+        ndarray: a new perturbed instance of x.
+    """
+    repl_fn = getattr(repl, replace_method)
+    r = repl_fn(x)
     assert x.shape == m.shape == r.shape
-    
-    # m == 1 still, m == 0 disabled and replaced
     z = x * m + r * (1 - m)
     return z
 
 
-def perturb_instances(X, x_coef, method="zeros", axis=None, percentile=90, random=False, **kwargs):
-    """ Perturb X based on coefficient or explanations.
-        :param X: list of ndarray of shape (nfeatures, ncolumns). In time series it will be (nfeatures, nsteps)
-        :param x_coef: if it is None, then random is used.
-        :param axis: 
-            - 1 : get percentile rowwise -> get 90 percentile per feature
-            - None: consider x_coef as an array -> get 90 percentile overall
-        :param method: perturbation method to generate perturbed test set.
-        :param random:
-            - 0/False: no random, use percentile
-            - 1/True: use random in general
-            - 2 : random only variables having segments changed
+def perturb_instances(X, relevance, replace_method="zeros", random_method=None, **kwargs):
+    """Perturb multiple instances X, given their relevance/explainations.
+    
+        :param X: list of ndarray of shape (n_steps, features)
+        :param relevance: if it is None, then random is used.
+        :param method: replacement method for disabled/off relevance at point t
+        :param random_method: ("all" | "each") random method on each feature or all. Default None
+            For all, an instance x in X is raveled, shorted, and then reshaped back.
     """
+    for x in X:
+        m = mask_percentile(x)
+        z = perturb_instance(x, method=replace_method, **kwargs)
 
     def _f(t, x_coef):
         # m = mask_percentile(x_coef, percentile, axis=axis, random=random)
         m = mask(x_coef, axis=axis, random=random)
-        r = replacements(t, method=method, **kwargs)
+        r = replacements(t, method=replace_method, **kwargs)
         z = perturb(t, m, r) # 1: on, 0: off/disabled/perturbed
         return z
 
-    Z = np.array([_f(x, x_coef[i]) for i, x in enumerate(X)])
+    Z = np.array([_f(x, relevance[i]) for i, x in enumerate(X)])
 
     return Z
 
