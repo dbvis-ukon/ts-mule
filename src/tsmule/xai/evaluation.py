@@ -84,7 +84,7 @@ def corr_matrix(coef_or_models, names=None, **corr_kwargs):
         names = [i for i in range(len(coef))]
 
     assert len(names) == len(coef), \
-        f"Not matching length of names and coef_or_models, {len(names)} and {len(coef)}"
+        f'Not matching length of names and coef_or_models, {len(names)} and {len(coef)}'
 
     df = pd.DataFrame({n: c for n, c in zip(names, coef)})
     return df.corr(**corr_kwargs)

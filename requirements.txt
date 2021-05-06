@@ -6,5 +6,5 @@ jupyterlab
 jupyter
 notebook
 tensorflow
-tslearn
 stumpy
+pyts
