@@ -1,6 +1,7 @@
-"""Test module for replacement calculations."""
+""" Test module for replacement calculations. """
 import numpy as np
-from sampling import replace as repl
+
+from tsmule import replace as repl
 
 ts = np.array([[1, 3, 9, 5, 4, 6, 7, 5, 9, 2, 6, 6, 7, 4, 0, 0]]).T
 mts = np.array([[1, 3, 9, 5, 4, 6, 7, 5, 9, 2, 6, 6, 7, 4, 0, 0],

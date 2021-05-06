@@ -1,4 +1,4 @@
-"""Implementation of LIME for Time Series."""
+""" Implementation of LIME for Time Series. """
 import logging
 import numpy as np
 import pandas as pd
@@ -12,7 +12,7 @@ from sklearn.model_selection import train_test_split
 
 
 class XAIModels:
-    """Supporting Estimators for XAI.
+    """ Supporting Estimators for XAI.
 
     reference:
         - https://scikit-learn.org/stable/modules/classes.html#module-sklearn.linear_model
@@ -26,7 +26,7 @@ class XAIModels:
 
 
 class LIMEAbstract(ABC):
-    """Abstract module of LIME which include all methods needs to implemented."""
+    """ Abstract module of LIME which include all methods needs to implemented. """
 
     def __init__(self, sample_size=100, **_kwargs):
         self.sample_size = sample_size
@@ -50,7 +50,7 @@ class LIMEAbstract(ABC):
     @xai_estimator.setter
     def xai_estimator(self, v):
         if not isinstance(v, BaseEstimator) or 'fit' not in dir(v):
-            raise ValueError("The estimator not supported by sklearn.")
+            raise ValueError('The estimator not supported by sklearn.')
         self._xai_estimator = v
 
     @property
@@ -64,12 +64,12 @@ class LIMEAbstract(ABC):
     @perturb_obj.setter
     def perturb_obj(self, v):
         if 'perturb' not in dir(v):
-            raise ValueError("Not found perturb function in the class.")
+            raise ValueError('Not found perturb function in the class.')
         self._perturbator = v
 
 
 class LIMETimeSeries(LIMEAbstract):
-    """LIME for time series witch time slicing."""
+    """ LIME for time series witch time slicing. """
 
     def __init__(self, scale='async', perturb_method='zeros',
                  window_size=3, off_prob=0.5, sample_size=10, **kwargs):
@@ -90,12 +90,12 @@ class LIMETimeSeries(LIMEAbstract):
         self.score = np.nan
 
         # Set-up Perturbator
-        if scale == "async":
+        if scale == 'async':
             self.perturb_obj = ASyncTimeSlicer(window_size, off_prob, perturb_method)
         elif scale == 'sync':
             self.perturb_obj = SyncTimeSlicer(window_size, off_prob, perturb_method)
         else:
-            ValueError(f"Scale {scale} currently is not supported.")
+            ValueError(f'Scale {scale} currently is not supported.')
 
     def _get_samples(self, x, predict_fn, sample_size, **kwargs):
         samples = self._perturbator.perturb(x, n_samples=sample_size, **kwargs)
@@ -115,7 +115,7 @@ class LIMETimeSeries(LIMEAbstract):
 
     def explain(self, x, predict_fn, **kwargs):
         assert np.ndim(x) == 2, \
-            "Only 2 dimension accepted. If univariate time series please use np.reshape(-1, 1)"
+            'Only 2 dimension accepted. If univariate time series please use np.reshape(-1, 1)'
         self.n_features, self.n_steps = x.shape
         self.n_segments = (self.n_steps // self.window_size) + int(bool(self.n_steps % self.window_size))
 
@@ -137,7 +137,7 @@ class LIMETimeSeries(LIMEAbstract):
 
         # Fit to XAI estimator
         self.xai_estimator.fit(X_train, y_train, sw_train)
-        self.logger.info("Updated xai estimator.")
+        self.logger.info('Updated xai estimator.')
 
         # Evaluate XAI estimator
         # Reference: https://scikit-learn.org/stable/modules/model_evaluation.html#regression-metrics
@@ -163,7 +163,7 @@ class LIMETimeSeries(LIMEAbstract):
         coef_mean = coef.mean(axis=0)
         score_mean = score.mean(axis=0)
         assert self.coef.shape == coef_mean.shape, \
-            "Not same shape between 2 coefficients"
+            'Not same shape between 2 coefficients'
 
         self.xai_estimator.coef_ = coef_mean
         self.score = score_mean
