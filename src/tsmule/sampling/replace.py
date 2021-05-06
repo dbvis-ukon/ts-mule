@@ -42,3 +42,13 @@ def global_noise(x, segments, *_args, **_kwargs):
 
 def reference_set(ref_set, segments, *_args, **_kwargss):
     pass
+
+def inverse_max(x, *_args, **_kwargs):
+    _, n_features = x.shape
+    v = x.max(axis=0)
+    r = v.reshape(-1, n_features) - x
+    return r
+
+def random(x, *_args, **_kwargs):
+    r = np.random.rand(*x.shape)
+    return r
