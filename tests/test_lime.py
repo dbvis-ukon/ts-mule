@@ -53,7 +53,7 @@ def test_base_explain():
     
     
 
-@pytest.mark.skip("Fixing Errors")
+@pytest.mark.skip("Manual Test")
 def test_ts_explain():
     lime_ts = LimeTS(n_samples=1000)
     predict_fn = lambda x: x.sum()

@@ -1,108 +1,147 @@
 """Evaluation for different explainers."""
-import copy
+from functools import partial
+from os import stat
 import numpy as np
-import pandas as pd
-from biokit.viz import corrplot
 
-from . import LimeBase
 from sampling import replace as repl
 
-def mask_percentile(x, upper_percentile=90, lower_percentile=10):
-    # 1/on/keep and 0/off/disabled
-    # n_steps, features = x
-    upper_percentile = 90
+class PerturbationBase:
+    def __init__(self) -> None:
+        pass
     
-    upper = np.percentile(x, upper_percentile, axis=0)
-    lower = np.percentile(x, lower_percentile, axis=0)
-    
-    # Get important points if 
-    #   x larger than 90 percentile if positives
-    #   x smaller than 10 percentile if negatives
-    m = (x.round(2) != 0)
-    m *= ((x > upper) * (x > 0) + (x < lower) * (x < 0))
-    
-    # reverse to have 1 = on, 0 = off
-    m = 1 - m   
-    assert m.shape == x.shape, "Not matching shape between mask and x"
-    
-    return m
+    @staticmethod
+    def mask_percentile(x, percentile=90):
+        # 1/on/keep and 0/off/disabled
+        # n_steps, features = x
+        
+        # normalized relevance
+        amin = partial(np.min, axis=0)
+        amax = partial(np.max, axis=0)
+        relevance_norm = (x - amin(x)) / (amax(x) - (amin(x)))
+        
+        # get points > percentile 90, which are being perturbed
+        p90 = np.percentile(relevance_norm, percentile, axis=0)
+        m = (relevance_norm > p90)
+        
+        # reverse to have 1 = on, 0 = off 
+        m = 1 - m   
+        
+        return m
 
-
-def mask_random(m, method="all"):
-    # Random the masked percentile-90. 
-    _m = np.array(m)
-    if method == "all":
-        # shuffle all values, without regarding to features
-        _m = _m.ravel()
-        np.random.shuffle(_m)
-        _m = _m.reshape(m.shape)
-    if method == "each":
+    @staticmethod
+    def _randomize(m, delta=0.1):
+        # Random the masked percentile-90. 
+        # m = mask_percentile(x)
+        m = np.array(m)     # copy
+        n_steps, features = m.shape
+        
+        # Get number of off-relevance per feature
+        n_offs = (m == 0).sum(axis=0)
+        
+        # Increase/decrease number of off-relevance (round up)
+        n_offs = np.ceil(n_offs * (1 + delta))
+        
+        # Get p_offs
+        p_offs = n_offs / n_steps
+        random_mask = []
+        for p in list(p_offs):
+            t = np.random.choice(a=[0, 1], size=n_steps, p=[p, 1-p])
+            random_mask.append(t)
+        random_mask = np.stack(random_mask, axis=1)
+        
+        assert m.shape == random_mask.shape
+        
         # inplace shuffle for each feature
-        _ = np.apply_along_axis(np.random.shuffle, axis=0, arr=_m)
-    return _m
+        _ = np.apply_along_axis(np.random.shuffle, axis=0, arr=random_mask)
+        
+        return random_mask
 
-def perturb_instance(x, m, replace_method="zeros"):
-    """Perturb and instance in percentile 90/10. 
+    @classmethod
+    def mask_randomize(cls, x, percentile=90, delta=0.1):
+        m = cls.mask_percentile(x, percentile)
+        m = cls._randomize(m, delta)
+        return m
 
-    Args:
-        x (ndarray): time series with shape (n_steps, features)
-        m (ndarray): a masking of 1s and 0s of x in shape of (n_steps, features)
-        replace_method (str, optional): Replacement methods to replace disabled points. Defaults to "zeros".
-            - All methods is built-in functions in sampling.replace module.
+    @staticmethod
+    def _perturb(x, m, replace_method="zeros"):
+        """Perturb an instance x, given a mask. 
 
-    Returns:
-        ndarray: a new perturbed instance of x.
-    """
-    repl_fn = getattr(repl, replace_method)
-    r = repl_fn(x)
-    assert x.shape == m.shape == r.shape
-    z = x * m + r * (1 - m)
-    return z
+        Args:
+            x (ndarray): time series with shape (n_steps, features)
+            m (ndarray): a masking of 1s and 0s of x in shape of (n_steps, features)
+            replace_method (str, optional): Replacement methods to replace disabled points. Defaults to "zeros".
+                - All methods is built-in functions in sampling.replace module.
 
-
-def perturb_instances(X, relevance, replace_method="zeros", random_method=None, **kwargs):
-    """Perturb multiple instances X, given their relevance/explainations.
-    
-        :param X: list of ndarray of shape (n_steps, features)
-        :param relevance: if it is None, then random is used.
-        :param method: replacement method for disabled/off relevance at point t
-        :param random_method: ("all" | "each") random method on each feature or all. Default None
-            For all, an instance x in X is raveled, shorted, and then reshaped back.
-    """
-    for x in X:
-        m = mask_percentile(x)
-        z = perturb_instance(x, method=replace_method, **kwargs)
-
-    def _f(t, x_coef):
-        # m = mask_percentile(x_coef, percentile, axis=axis, random=random)
-        m = mask(x_coef, axis=axis, random=random)
-        r = replacements(t, method=replace_method, **kwargs)
-        z = perturb(t, m, r) # 1: on, 0: off/disabled/perturbed
+        Returns:
+            ndarray: a new perturbed instance of x.
+        """
+        repl_fn = getattr(repl, replace_method)
+        r = repl_fn(x)
+        assert x.shape == m.shape == r.shape
+        z = x * m + r * (1 - m)
         return z
 
-    Z = np.array([_f(x, relevance[i]) for i, x in enumerate(X)])
 
-    return Z
+    def perturb(self, X, R, replace_method="zeros", percentile=90, shuffle=False, delta=0.1):
+        """Perturb list of time series
 
+        Args:
+            X (list): list of instances with shape (n_steps, features). 
+            R (list): list of relevances for each instance with shape (n_steps, features).
+            replace_method (str, optional): method to replace disabled. Defaults to "zeros".
+            shuffle (bool, optional): If true, then random. Defaults to False.
+                The relevance is randomized based on number of disabled relevance. 
+            delta (float, optional): Increase/decrease the number of disabled relevance. Defaults to 0.1.
 
-def corr_matrix(coef_or_models, names=None, **corr_kwargs):
-    assert isinstance(coef_or_models, list)
-    if all([isinstance(m, LimeBase) for m in coef_or_models]):
-        coef = [m.coef for m in coef_or_models]
-    else:
-        coef = coef_or_models
+        Yields:
+            [ndarray]: multiple perturbed instances
+        """
+        for x, r in zip(X, R):
+            assert x.shape == r.shape, \
+                f"Conflict in shape, instance x with shape {x.shape} while relevance r: {r.shape}"
 
-    if names is None:
-        names = [i for i in range(len(coef))]
+            # Get mask based on relevance
+            if shuffle:
+                m = self.mask_randomize(r, percentile, delta)
+            else:
+                m = self.mask_percentile(r, percentile)
+            yield self._perturb(x, m, method=replace_method)
 
-    assert len(names) == len(coef), \
-        f"Not matching length of names and coef_or_models, {len(names)} and {len(coef)}"
+class PerturbationAnalysis(PerturbationBase):
+    def __init__(self, percentile=90, delta=0.1, replace_method="zeros") -> None:
+        super().__init__()
+        
+        self.insights = dict()
+        self.percentile = percentile
+        self.delta = delta
+        self.repl_method = replace_method
+        
+    def add_insight(self, k, v):
+        self.update({k: v})
 
-    df = pd.DataFrame({n: c for n, c in zip(names, coef)})
-    return df.corr(**corr_kwargs)
-
-
-def plot_corr(df_corr, method='square'):
-    c = corrplot.Corrplot(df_corr)
-    c.plot(method=method, shrink=.9, rotation=45)
-    # c.plot(method=method, fontsize=8, colorbar=False)
+    def to_json(file_path):
+        pass
+    
+    def analysis(self, X, y, R, eval_fn, replace_method="zeros", percentile=90, delta=0.1):
+        
+        X_p90 = self.perturb(X, R, 
+                            replace_method=replace_method, 
+                            percentile=percentile,
+                            )
+        X_random = self.perturb(X, R, 
+                            replace_method=replace_method, 
+                            percentile=percentile,
+                            delta=delta
+                            )
+        
+        score = eval_fn(X, y)
+        self.add_insight("X", score)
+        
+        score_p90 = eval_fn(X_p90, y)
+        self.add_insight("X_p90", score_p90)
+        
+        score_random = eval_fn(X_random, y)
+        self.add_insight("X_random", score_random)
+        
+        return self.insights
+        

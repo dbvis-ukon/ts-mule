@@ -63,10 +63,10 @@ class LimeBase(AbstractXAI):
         z_hat = list(map(predict_fn, new_x))
         
         # Try to approximate g(z') ~ f(new_x) <=> g(z') = Z'* W ~ Z_hat
-        #   or z_prime ~ X, z_hat ~ y, pi ~ sample weight (sw)
         _t = train_test_split(z_prime, z_hat, pi, test_size=0.3, random_state=42)
         X, X_test, y, y_test, sw, sw_test = _t
         
+        # Avoid nan in similarity
         sw = np.nan_to_num(np.abs(sw), 0.01)
         sw_test = np.nan_to_num(np.abs(sw_test), 0.01)
         
