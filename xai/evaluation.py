@@ -38,10 +38,10 @@ class PerturbationBase:
         # Get number of off-relevance per feature
         n_offs = (m == 0).sum(axis=0)
         
-        # Increase/decrease number of off-relevance (round up)
+        # Increase/decrease number of off-relevance with delta
         n_offs = np.ceil(n_offs * (1 + delta))
         
-        # Get p_offs
+        # Get probability of disabled relevance
         p_offs = n_offs / n_steps
         random_mask = []
         for p in list(p_offs):

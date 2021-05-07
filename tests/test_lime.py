@@ -51,14 +51,12 @@ def test_base_explain():
     _kernel, score = lime._explain(samples, kernel, predict_fn)
     assert score == 1 and _kernel.coef_ is not None
     
-    
 
-@pytest.mark.skip("Manual Test")
 def test_ts_explain():
     lime_ts = LimeTS(n_samples=1000)
     predict_fn = lambda x: x.sum()
     
-    coef = lime_ts.explain(ts, predict_fn)
-    assert all(coef >= 0)
-
-
+    coef = lime_ts.explain(mts, predict_fn)
+    assert all(coef.ravel() >= 0)
+    assert coef.shape == mts.shape
+    
