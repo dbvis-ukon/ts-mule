@@ -47,13 +47,19 @@ class LimeBase(AbstractXAI):
         self._kernel = kernel
         self._sampler = sampler
         self._segmenter = segmenter
-        
+
         self.logger = logging.getLogger(f"::{self.__class__.__name__}::")
-    
+        self._coef = None
+        self._xcoef = None
+        
+    @property
+    def segment_coef(self):
+        return self._coef
+
     @property
     def coef(self):
-        return self._kernel.coef_
-
+        return self._xcoef
+    
     @staticmethod
     def _explain(samples, kernel, predict_fn):
         # Unpack samples
@@ -62,10 +68,10 @@ class LimeBase(AbstractXAI):
         z_hat = list(map(predict_fn, new_x))
         
         # Try to approximate g(z') ~ f(new_x) <=> g(z') = Z'* W ~ Z_hat
-        #   or z_prime ~ X, z_hat ~ y, pi ~ sample weight (sw)
         _t = train_test_split(z_prime, z_hat, pi, test_size=0.3, random_state=42)
         X, X_test, y, y_test, sw, sw_test = _t
         
+        # Avoid nan in similarity
         sw = np.nan_to_num(np.abs(sw), 0.01)
         sw_test = np.nan_to_num(np.abs(sw_test), 0.01)
         
@@ -79,15 +85,39 @@ class LimeBase(AbstractXAI):
         return kernel, score
     
     def explain(self, x, predict_fn, segment_method="slopes", **kwargs):
-        # Segmentation
+        
+        n_steps, features = x.shape
+        # Get segmentation masks
         seg_m = self._segmenter.segment(x, segment_method=segment_method)
+        
+        # Generate samples
         samples = self._sampler.perturb(x, seg_m)
-        kernel = self._kernel
         
         # Fitting into the model/kernel
+        kernel = self._kernel
         self._kernel, self.score = self._explain(samples, kernel, predict_fn)
         
-        return self.coef
+        # Set coef of segments
+        coef = self._kernel.coef_
+        self._coef = coef.reshape(-1, features)
+        
+        self._xcoef =  self.to_original(coef, seg_m)
+        return self._xcoef
+
+    @staticmethod
+    def to_original(coef, segments):
+        """Convert coef per segment to coef per point.
+        """
+        x_coef = np.zeros_like(segments).astype(float)
+        
+        # Get labels vectors from segmentation
+        seg_unique_labels = np.unique(segments)
+        assert coef.shape == seg_unique_labels.shape
+        
+        for i, l in enumerate(seg_unique_labels):
+            idx = (segments == l)
+            x_coef[idx] = coef[i]
+        return x_coef
 
 class LimeTS(LimeBase):
     def __init__(self, 
