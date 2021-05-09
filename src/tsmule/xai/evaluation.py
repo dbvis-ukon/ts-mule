@@ -3,7 +3,7 @@ from functools import partial
 from os import stat
 import numpy as np
 
-from sampling import replace as repl
+from ..sampling import replace as repl
 
 class PerturbationBase:
     def __init__(self) -> None:
@@ -33,7 +33,7 @@ class PerturbationBase:
         # Random the masked percentile-90. 
         # m = mask_percentile(x)
         m = np.array(m)     # copy
-        n_steps, features = m.shape
+        n_steps, _ = m.shape
         
         # Get number of off-relevance per feature
         n_offs = (m == 0).sum(axis=0)
@@ -63,13 +63,13 @@ class PerturbationBase:
         return m
 
     @staticmethod
-    def _perturb(x, m, replace_method="zeros"):
+    def _perturb(x, m, replace_method='zeros'):
         """Perturb an instance x, given a mask. 
 
         Args:
             x (ndarray): time series with shape (n_steps, features)
             m (ndarray): a masking of 1s and 0s of x in shape of (n_steps, features)
-            replace_method (str, optional): Replacement methods to replace disabled points. Defaults to "zeros".
+            replace_method (str, optional): Replacement methods to replace disabled points. Defaults to 'zeros'.
                 - All methods is built-in functions in sampling.replace module.
 
         Returns:
@@ -108,7 +108,7 @@ class PerturbationBase:
 
 
 class PerturbationAnalysis(PerturbationBase):
-    def __init__(self, percentile=90, delta=0.1, replace_method="zeros") -> None:
+    def __init__(self, percentile=90, delta=0.1, replace_method='zeros') -> None:
         super().__init__()
         
         self.insights = dict()
@@ -122,7 +122,7 @@ class PerturbationAnalysis(PerturbationBase):
     def to_json(file_path):
         pass
     
-    def analysis(self, X, y, R, eval_fn, replace_method="zeros", percentile=90, delta=0.1):
+    def analysis(self, X, y, R, eval_fn, replace_method='zeros', percentile=90, delta=0.1):
         
         X_p90 = self.perturb(X, R, 
                             replace_method=replace_method, 
@@ -135,13 +135,13 @@ class PerturbationAnalysis(PerturbationBase):
                             )
         
         score = eval_fn(X, y)
-        self.add_insight("X", score)
+        self.add_insight('X', score)
         
         score_p90 = eval_fn(X_p90, y)
-        self.add_insight("X_p90", score_p90)
+        self.add_insight('X_p90', score_p90)
         
         score_random = eval_fn(X_random, y)
-        self.add_insight("X_random", score_random)
+        self.add_insight('X_random', score_random)
         
         return self.insights
         
