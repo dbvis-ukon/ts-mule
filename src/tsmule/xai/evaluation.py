@@ -81,7 +81,6 @@ class PerturbationBase:
         z = x * m + r * (1 - m)
         return z
 
-
     def perturb(self, X, R, replace_method="zeros", percentile=90, shuffle=False, delta=0.1):
         """Perturb list of time series
 
@@ -106,6 +105,7 @@ class PerturbationBase:
             else:
                 m = self.mask_percentile(r, percentile)
             yield self._perturb(x, m, method=replace_method)
+
 
 class PerturbationAnalysis(PerturbationBase):
     def __init__(self, percentile=90, delta=0.1, replace_method="zeros") -> None:

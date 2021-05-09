@@ -6,12 +6,11 @@ import numpy as np
 from sklearn import linear_model, metrics
 from sklearn.model_selection import train_test_split
 
-from sampling import Perturbation
-from sampling import MatrixProfileSegmentation
+from ..sampling.perturb import Perturbation
+from ..sampling.segment import MatrixProfileSegmentation
 
 class Kernels:
     """Kernels for perturbation-based XAI method.
-
     Notice that we use scikit-learn linear-regression kernels. 
     There are two main fitting types in fitting the model: fit, and partial fit. 
     Fit means we see all samples as a whole, while partial fit (or online learning with mini batches) is 
