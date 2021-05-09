@@ -48,7 +48,7 @@ class LimeBase(AbstractXAI):
         self._sampler = sampler
         self._segmenter = segmenter
 
-        self.logger = logging.getLogger(f"::{self.__class__.__name__}::")
+        self.logger = logging.getLogger(f'::{self.__class__.__name__}::')
         self._coef = None
         self._xcoef = None
         
@@ -84,11 +84,11 @@ class LimeBase(AbstractXAI):
         
         return kernel, score
     
-    def explain(self, x, predict_fn, segment_method="slopes", **kwargs):
+    def explain(self, x, predict_fn, segmentation_method='slopes-max', **kwargs):
         
-        n_steps, features = x.shape
+        _, features = x.shape
         # Get segmentation masks
-        seg_m = self._segmenter.segment(x, segment_method=segment_method)
+        seg_m = self._segmenter.segment(x, segmentation_method=segmentation_method)
         
         # Generate samples
         samples = self._sampler.perturb(x, seg_m)
@@ -127,7 +127,7 @@ class LimeTS(LimeBase):
                  partitions=10, 
                  win_length=-1,
                  p_off=0.5,
-                 replace_method="zeros",
+                 replace_method='zeros',
                  n_samples=100,
                  **kwargs) -> None:
         kernel = kernel or Kernels.Lasso
