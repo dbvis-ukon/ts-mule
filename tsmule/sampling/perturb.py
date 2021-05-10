@@ -72,7 +72,8 @@ class Perturbation(AbstractPerturbation):
         if method in ["pearsonr", "spearmanr", "kendalltau"]:
             fn = getattr(stats, method)
             pi, _ = fn(x.ravel(), z.ravel())
-            
+            # avoid nan
+            pi = np.nan_to_num(pi, 0.01)
         return pi
 
     @classmethod
