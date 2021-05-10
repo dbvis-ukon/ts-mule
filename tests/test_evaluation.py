@@ -1,11 +1,10 @@
 """Test module for evaluation functions."""
 import numpy as np
+import pytest
 
-import os
-import sys
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../tsmule')))
-
+from sklearn import metrics
 from tsmule.xai.evaluation import PerturbationAnalysis
+from tsmule.xai.lime import LimeTS
 
 ts = np.array([[1, 3, 9, 5, 4, 6, 7, 5, 9, 2, 6, 6, 7, 4, 0, 0]]).T
 mts = np.array([[1, 3, 9, 5, 4, 6, 7, 5, 9, 2, 6, 6, 7, 4, 0, 0],
@@ -45,3 +44,54 @@ def test_mask_randomize():
     n_offs = (m == 0).sum(axis=0)
     p_offs = n_offs/n_steps
     assert all(p_offs < 0.50)
+    
+def test_analysis_relevance():
+    X = [mts, mts, mts]
+    y = [1, 2, 3]
+    
+    predict_ = lambda x: 1
+    predict_fn_x = lambda X: np.array([1 for x in X])
+    eval_fn = lambda y1, y2: 1
+    
+    explainer = LimeTS()
+    relevance = [explainer.explain(x, predict_) for x in X]
+       
+    pa = PerturbationAnalysis()
+    pa.analysis_relevance(X, y, relevance, 
+                          predict_fn=predict_fn_x,
+                          eval_fn=eval_fn)
+    keys = ['original', 'percentile', 'random']
+    assert all( k  in pa.insights.keys() for k in keys)
+    assert all([pa.insights[k] == 1 for k in keys])
+    
+   
+@pytest.mark.skip("Manuel Test")
+def test_analysis_relevance_manual():
+    import dill 
+    import matplotlib.pyplot as plt
+    from tensorflow import keras
+    
+    data_dir = "demo/beijing_air_2_5"
+    cnn_model = keras.models.load_model(f'{data_dir}/beijing_air_2_5_cnn_model.h5')
+    with open(f'{data_dir}/beijing_air_2_5_test_data.dill', 'rb') as f:
+        dataset_test = dill.load(f)
+    
+    # Define a predict fn/model
+    def predict_(x):
+        if len(x.shape) == 2:
+            predictions = cnn_model.predict(x[np.newaxis]).ravel()
+        if len(x.shape) == 3:
+            predictions = cnn_model.predict(X).ravel()
+        return predictions
+    
+    # Get test set
+    X = dataset_test[0][:10]
+    y = dataset_test[1][:10]
+    explainer = LimeTS()
+    relevance = [explainer.explain(x, predict_) for x in X]
+    
+    pa = PerturbationAnalysis()
+    pa.analysis_relevance(X, y, relevance, 
+                          predict_fn=cnn_model.predict,
+                          eval_fn=metrics.mean_squared_error)
+        

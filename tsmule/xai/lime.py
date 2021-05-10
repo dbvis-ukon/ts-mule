@@ -98,11 +98,10 @@ class LimeBase(AbstractXAI):
         self._kernel, self.score = self._explain(samples, kernel, predict_fn)
         
         # Set coef of segments
-        coef = self._kernel.coef_
-        self._coef = coef.reshape(-1, features)
+        coef = np.array(self._kernel.coef_)
+        xcoef = self.to_original(coef, seg_m)
         
-        self._xcoef =  self.to_original(coef, seg_m)
-        return self._xcoef
+        return xcoef
 
     @staticmethod
     def to_original(coef, segments):

@@ -3,10 +3,6 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 
-import os
-import sys
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../tsmule')))
-
 from tsmule.sampling.segment import MatrixProfileSegmentation
 
 url = 'https://zenodo.org/record/4273921/files/STUMPY_Basics_steamgen.csv?download=1'
