@@ -2,7 +2,6 @@
 import numpy as np
 import pytest
 
-from sklearn import metrics
 from tsmule.xai.evaluation import PerturbationAnalysis
 from tsmule.xai.lime import LimeTS
 
@@ -70,6 +69,7 @@ def test_analysis_relevance():
 @pytest.mark.skip("Manuel Test")
 def test_analysis_relevance_manual():
     import dill 
+    from sklearn import metrics
     import matplotlib.pyplot as plt
     from tensorflow import keras
     
@@ -90,10 +90,11 @@ def test_analysis_relevance_manual():
     X = dataset_test[0][:10]
     y = dataset_test[1][:10]
     explainer = LimeTS()
-    relevance = [explainer.explain(x, predict_, segmentation_method="bins-max") for x in X]
+    relevance = [explainer.explain(x, predict_, segmentation_method="slopes-max") for x in X]
     
     pa = PerturbationAnalysis(replace_method='zeros')
-    pa.analysis_relevance(X, y, relevance, 
+    scores = pa.analysis_relevance(X, y, relevance, 
                           predict_fn=cnn_model.predict,
                           eval_fn=metrics.mean_squared_error)
+    scores
         
