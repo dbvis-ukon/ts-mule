@@ -32,22 +32,23 @@ class PerturbationBase:
         # Random the masked percentile-90. 
         # m = mask_percentile(x)
         m = np.array(m)     # copy
-        n_steps, _ = m.shape
+        n_steps, features = m.shape
         
         # Get number of off-relevance per feature
         n_offs = (m == 0).sum(axis=0)
         
         # Increase/decrease number of off-relevance with delta
-        n_offs = np.ceil(n_offs * (1 + delta))
+        #   Notice, n_offs is a vector of all features
+        n_offs = (np.ceil(n_offs * (1 + delta))).astype(int)
+        n_ons = (n_steps - n_offs).astype(int)
         
         # Get probability of disabled relevance
-        p_offs = n_offs / n_steps
         random_mask = []
-        for p in list(p_offs):
-            t = np.random.choice(a=[0, 1], size=n_steps, p=[p, 1-p])
+        for i in range(features):
+            t = np.concatenate([np.zeros(n_offs[i]), np.ones(n_ons[i])])
             random_mask.append(t)
-        random_mask = np.stack(random_mask, axis=1)
-        
+        random_mask = np.stack(random_mask, axis=1).astype(int)
+
         assert m.shape == random_mask.shape
         
         # inplace shuffle for each feature

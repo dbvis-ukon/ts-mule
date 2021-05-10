@@ -42,6 +42,8 @@ def test_mask_randomize():
     
     n_steps, _ = x.shape
     n_offs = (m == 0).sum(axis=0)
+    n_offs = (np.ceil(n_offs * (1 + 0.1))).astype(int)
+    
     p_offs = n_offs/n_steps
     assert all(p_offs < 0.50)
     
@@ -88,9 +90,9 @@ def test_analysis_relevance_manual():
     X = dataset_test[0][:10]
     y = dataset_test[1][:10]
     explainer = LimeTS()
-    relevance = [explainer.explain(x, predict_) for x in X]
+    relevance = [explainer.explain(x, predict_, segmentation_method="bins-max") for x in X]
     
-    pa = PerturbationAnalysis()
+    pa = PerturbationAnalysis(replace_method='zeros')
     pa.analysis_relevance(X, y, relevance, 
                           predict_fn=cnn_model.predict,
                           eval_fn=metrics.mean_squared_error)
