@@ -63,4 +63,69 @@ def test_ts_explain():
     coef = lime_ts.explain(mts, predict_fn)
     assert all(coef.ravel() >= 0)
     assert coef.shape == mts.shape
+
+@pytest.mark.skip("Manuel test")
+def test_explain_cnn():
+    import dill 
+    import matplotlib.pyplot as plt
+    from tensorflow import keras
+    
+    data_dir = "demo/beijing_air_2_5"
+    cnn_model = keras.models.load_model(f'{data_dir}/beijing_air_2_5_cnn_model.h5')
+    with open(f'{data_dir}/beijing_air_2_5_test_data.dill', 'rb') as f:
+        dataset_test = dill.load(f)
+    
+    # Define a predict fn/model
+    def predict_(x):
+        return cnn_model.predict(x[np.newaxis]).ravel()
+    
+    # Get a sample
+    sample = dataset_test[0][0]
+    
+    # First insight of the sample
+    n_steps, features = sample.shape
+    fig = plt.figure()
+    for i in range(features):
+        fig.add_subplot(features, 1, i+1)
+        plt.plot(sample[:,i])
+    plt.show()
+    
+    # Define an explainer
+    explainer = LimeTS()
+    
+    # Segmentation with slopes-max (default)
+    seg_m = explainer._segmenter.segment(sample, "slopes-max")
+    fig = plt.figure()
+    for i in range(features):
+        fig.add_subplot(features, 1, i+1)
+        plt.scatter(range(n_steps), sample[:, i], c=seg_m[:, i])
+    plt.show()
+    
+    # Samples and binary
+    perturbed_samples = explainer._sampler.perturb(sample, seg_m)
+    new_s, z_prime, pi = next(perturbed_samples)
+    fig = plt.figure()
+    for i in range(features):
+        fig.add_subplot(features, 1, i+1)
+        plt.plot(new_s[:,i])
+    plt.show()
+    
+    # Plot an on/off binary vector
+    fig, ax = plt.subplots()
+    ax.imshow(z_prime.reshape(-1, features).T)
+    plt.show()
+
+    # Explain the model
+    from sklearn import linear_model, metrics
+    explainer = LimeTS(n_samples=100)
+
+    Lasso = linear_model.Lasso(alpha=.01)
+    explainer._kernel = Lasso
+    xcoef = explainer.explain(sample, predict_)
+    
+    fig = plt.figure()
+    for i in range(features):
+        fig.add_subplot(features, 1, i+1)
+        plt.scatter(range(n_steps), xcoef[:, i], c=seg_m[:, i], marker="*")
+    plt.show()
     

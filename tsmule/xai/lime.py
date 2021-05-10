@@ -22,8 +22,8 @@ class Kernels:
         - https://scikit-learn.org/0.15/modules/scaling_strategies.html
     """
     # Fit only
-    Lasso = linear_model.Lasso(alpha=.5, fit_intercept=True)
-    Ridge = linear_model.Ridge(alpha=.5, fit_intercept=True)
+    Lasso = linear_model.Lasso(alpha=.01)
+    Ridge = linear_model.Ridge(alpha=.01)
     
     # Fit and Partial fit
     SGDClassifier = linear_model.SGDClassifier()
