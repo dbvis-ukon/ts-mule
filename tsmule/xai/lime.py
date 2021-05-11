@@ -1,4 +1,4 @@
-"""Implementation of LIME for Time Series."""
+""" Implementation of LIME for Time Series. """
 import logging
 from abc import ABC, abstractclassmethod
 import numpy as np
@@ -10,7 +10,7 @@ from ..sampling.perturb import Perturbation
 from ..sampling.segment import MatrixProfileSegmentation
 
 class Kernels:
-    """Kernels for perturbation-based XAI method.
+    """ Kernels for perturbation-based XAI method.
     Notice that we use scikit-learn linear-regression kernels. 
     There are two main fitting types in fitting the model: fit, and partial fit. 
     Fit means we see all samples as a whole, while partial fit (or online learning with mini batches) is 
@@ -22,8 +22,8 @@ class Kernels:
         - https://scikit-learn.org/0.15/modules/scaling_strategies.html
     """
     # Fit only
-    Lasso = linear_model.Lasso(alpha=0.1, fit_intercept=True)
-    Ridge = linear_model.Ridge(alpha=0.1, fit_intercept=True)
+    Lasso = linear_model.Lasso(alpha=.01)
+    Ridge = linear_model.Ridge(alpha=.01)
     
     # Fit and Partial fit
     SGDClassifier = linear_model.SGDClassifier()
@@ -31,7 +31,7 @@ class Kernels:
 
 
 class AbstractXAI(ABC):
-    """Abstract Module for explainable AI. """
+    """ Abstract Module for explainable AI. """
     @abstractclassmethod
     def __init__(self) -> None:
         pass
@@ -41,7 +41,7 @@ class AbstractXAI(ABC):
         pass
 
 class LimeBase(AbstractXAI):
-    """Module of LIME in explaining a model."""
+    """ Module of LIME in explaining a model. """
     
     def __init__(self, kernel=None, sampler=None, segmenter=None) -> None:
         self._kernel = kernel
@@ -98,16 +98,14 @@ class LimeBase(AbstractXAI):
         self._kernel, self.score = self._explain(samples, kernel, predict_fn)
         
         # Set coef of segments
-        coef = self._kernel.coef_
-        self._coef = coef.reshape(-1, features)
+        coef = np.array(self._kernel.coef_)
+        xcoef = self.to_original(coef, seg_m)
         
-        self._xcoef =  self.to_original(coef, seg_m)
-        return self._xcoef
+        return xcoef
 
     @staticmethod
     def to_original(coef, segments):
-        """Convert coef per segment to coef per point.
-        """
+        """ Convert coef per segment to coef per point. """
         x_coef = np.zeros_like(segments).astype(float)
         
         # Get labels vectors from segmentation
