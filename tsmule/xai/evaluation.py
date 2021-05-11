@@ -1,6 +1,5 @@
 """Evaluation for different explainers."""
 from functools import partial
-from os import stat
 import numpy as np
 
 from ..sampling import replace as repl
@@ -33,22 +32,23 @@ class PerturbationBase:
         # Random the masked percentile-90. 
         # m = mask_percentile(x)
         m = np.array(m)     # copy
-        n_steps, _ = m.shape
+        n_steps, features = m.shape
         
         # Get number of off-relevance per feature
         n_offs = (m == 0).sum(axis=0)
         
         # Increase/decrease number of off-relevance with delta
-        n_offs = np.ceil(n_offs * (1 + delta))
+        #   Notice, n_offs is a vector of all features
+        n_offs = (np.ceil(n_offs * (1 + delta))).astype(int)
+        n_ons = (n_steps - n_offs).astype(int)
         
         # Get probability of disabled relevance
-        p_offs = n_offs / n_steps
         random_mask = []
-        for p in list(p_offs):
-            t = np.random.choice(a=[0, 1], size=n_steps, p=[p, 1-p])
+        for i in range(features):
+            t = np.concatenate([np.zeros(n_offs[i]), np.ones(n_ons[i])])
             random_mask.append(t)
-        random_mask = np.stack(random_mask, axis=1)
-        
+        random_mask = np.stack(random_mask, axis=1).astype(int)
+
         assert m.shape == random_mask.shape
         
         # inplace shuffle for each feature
@@ -85,8 +85,8 @@ class PerturbationBase:
         """Perturb list of time series
 
         Args:
-            X (list): list of instances with shape (n_steps, features). 
-            R (list): list of relevances for each instance with shape (n_steps, features).
+            X (Iterable): Instances with shape (n_steps, features). 
+            R (Iterable): Relevances for each instance with shape (n_steps, features).
             replace_method (str, optional): method to replace disabled. Defaults to "zeros".
             shuffle (bool, optional): If true, then random. Defaults to False.
                 The relevance is randomized based on number of disabled relevance. 
@@ -104,7 +104,7 @@ class PerturbationBase:
                 m = self.mask_randomize(r, percentile, delta)
             else:
                 m = self.mask_percentile(r, percentile)
-            yield self._perturb(x, m, method=replace_method)
+            yield self._perturb(x, m, replace_method=replace_method)
 
 
 class PerturbationAnalysis(PerturbationBase):
@@ -117,31 +117,44 @@ class PerturbationAnalysis(PerturbationBase):
         self.repl_method = replace_method
         
     def add_insight(self, k, v):
-        self.update({k: v})
+        self.insights.update({k: v})
 
     def to_json(file_path):
         pass
     
-    def analysis(self, X, y, R, eval_fn, replace_method='zeros', percentile=90, delta=0.1):
+    def analysis_relevance(self, X, y, R, 
+                           predict_fn, eval_fn, 
+                           replace_method='zeros', percentile=90, delta=0.1):
         
-        X_p90 = self.perturb(X, R, 
+        # Perturb instance based on percentile
+        X_percentile = self.perturb(X, R, 
                             replace_method=replace_method, 
                             percentile=percentile,
                             )
+        X_percentile = np.array(list(X_percentile))
+        
         X_random = self.perturb(X, R, 
                             replace_method=replace_method, 
                             percentile=percentile,
+                            shuffle=True,
                             delta=delta
                             )
+        X_random = np.array(list(X_random))
         
-        score = eval_fn(X, y)
-        self.add_insight('X', score)
+        # Score for original
+        y_pred = predict_fn(X).ravel()
+        score = eval_fn(y_pred, y)
+        self.add_insight('original', score)
         
-        score_p90 = eval_fn(X_p90, y)
-        self.add_insight('X_p90', score_p90)
+        # Score for Percentile
+        y_pred = predict_fn(X_percentile).ravel()
+        score = eval_fn(y_pred, y)
+        self.add_insight(f'percentile', score)
         
-        score_random = eval_fn(X_random, y)
-        self.add_insight('X_random', score_random)
+        # Score for random
+        y_pred = predict_fn(X_random).ravel()
+        score = eval_fn(y_pred, y)
+        self.add_insight('random', score)
         
         return self.insights
         
