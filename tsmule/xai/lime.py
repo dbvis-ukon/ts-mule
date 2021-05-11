@@ -22,8 +22,8 @@ class Kernels:
         - https://scikit-learn.org/0.15/modules/scaling_strategies.html
     """
     # Fit only
-    Lasso = linear_model.Lasso(alpha=.5, fit_intercept=True)
-    Ridge = linear_model.Ridge(alpha=.5, fit_intercept=True)
+    Lasso = linear_model.Lasso(alpha=0.1, fit_intercept=True)
+    Ridge = linear_model.Ridge(alpha=0.1, fit_intercept=True)
     
     # Fit and Partial fit
     SGDClassifier = linear_model.SGDClassifier()
@@ -130,6 +130,7 @@ class LimeTS(LimeBase):
                  replace_method='zeros',
                  n_samples=100,
                  **kwargs) -> None:
+
         kernel = kernel or Kernels.Lasso
         sampler = sampler or Perturbation(p_off, replace_method, n_samples)        
         segmenter = segmenter or MatrixProfileSegmentation(partitions, win_length)

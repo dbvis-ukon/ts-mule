@@ -1,6 +1,11 @@
 """Test module for evaluation functions."""
 import numpy as np
-from xai.evaluation import PerturbationAnalysis
+
+import os
+import sys
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../tsmule')))
+
+from tsmule.xai.evaluation import PerturbationAnalysis
 
 ts = np.array([[1, 3, 9, 5, 4, 6, 7, 5, 9, 2, 6, 6, 7, 4, 0, 0]]).T
 mts = np.array([[1, 3, 9, 5, 4, 6, 7, 5, 9, 2, 6, 6, 7, 4, 0, 0],
