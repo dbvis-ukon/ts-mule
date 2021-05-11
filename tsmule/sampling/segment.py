@@ -160,7 +160,7 @@ class MatrixProfileSegmentation(AbstractSegmentation):
         Returns:
             segmentation_mask: the segmentation mask of a time series. It has the same shape with time series sample.
         """
-        
+        time_series_sample = time_series_sample.astype(float)
         if segmentation_method == 'slopes-min':
             return self._segment_with_slopes(time_series_sample,
                                              m=self.win_length, 

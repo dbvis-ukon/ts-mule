@@ -30,7 +30,7 @@ test:
 	@echo
 	python -m pytest \
 		-v \
-		--cov=sampling \
+		--cov=tsmule \
 		--cov-report=term \
 		--cov-report=html:.coverage-report \
 		tests/
