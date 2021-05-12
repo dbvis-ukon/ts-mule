@@ -242,3 +242,32 @@ class SAXSegmentation(AbstractSegmentation):
             win_idx += 1
 
         return segmentation_mask
+
+class WindowSegmentation(AbstractSegmentation):
+    """Windows segmentation with non-overlapping windows. """
+
+    def __init__(self, partitions, win_length=3):
+        self.partitions = partitions
+        self.win_length = max(3, win_length)
+    
+    
+    def _segment_with_uniform(self, time_series_sample, m=4):
+        """Segment a time series into uniform windows with the same window size.
+
+        Notice: The window size at the end or begining could be smaller if n_steps % window_lenth != 0
+        """
+        n_steps, features = time_series_sample.shape
+        assert n_steps > m, "Window size must be larger than n-steps"
+
+        starts = np.arange(0, n_steps, m)
+        ends = np.fmin(starts + m, n_steps)
+        
+        segmentation_mask = np.zeros_like(time_series_sample)
+        win_idx = 0
+        for feature in range(features):
+            for i, j in zip(starts, ends):
+                segmentation_mask[i: j, feature] = win_idx
+                win_idx +=1
+        
+        return segmentation_mask
+    
