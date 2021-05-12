@@ -28,7 +28,7 @@ class PerturbationBase:
         return m
 
     @staticmethod
-    def _randomize(m, delta=0.1):
+    def _randomize(m, delta=0.0):
         # Random the masked percentile-90. 
         # m = mask_percentile(x)
         m = np.array(m)     # copy
@@ -56,11 +56,13 @@ class PerturbationBase:
         
         return random_mask
 
+
     @classmethod
-    def mask_randomize(cls, x, percentile=90, delta=0.1):
+    def mask_randomize(cls, x, percentile=90, delta=0.0):
         m = cls.mask_percentile(x, percentile)
         m = cls._randomize(m, delta)
         return m
+
 
     @staticmethod
     def _perturb(x, m, replace_method='zeros'):
@@ -81,7 +83,8 @@ class PerturbationBase:
         z = x * m + r * (1 - m)
         return z
 
-    def perturb(self, X, R, replace_method="zeros", percentile=90, shuffle=False, delta=0.1):
+
+    def perturb(self, X, R, replace_method="zeros", percentile=90, shuffle=False, delta=0.0):
         """Perturb list of time series
 
         Args:
@@ -90,7 +93,7 @@ class PerturbationBase:
             replace_method (str, optional): method to replace disabled. Defaults to "zeros".
             shuffle (bool, optional): If true, then random. Defaults to False.
                 The relevance is randomized based on number of disabled relevance. 
-            delta (float, optional): Increase/decrease the number of disabled relevance. Defaults to 0.1.
+            delta (float, optional): Increase/decrease the number of disabled relevance. Defaults to 0.0.
 
         Yields:
             [ndarray]: multiple perturbed instances
@@ -108,7 +111,7 @@ class PerturbationBase:
 
 
 class PerturbationAnalysis(PerturbationBase):
-    def __init__(self, percentile=90, delta=0.1, replace_method='zeros') -> None:
+    def __init__(self, percentile=90, delta=0.0, replace_method='zeros') -> None:
         super().__init__()
         
         self.insights = dict()
@@ -116,15 +119,18 @@ class PerturbationAnalysis(PerturbationBase):
         self.delta = delta
         self.repl_method = replace_method
         
+        
     def add_insight(self, k, v):
         self.insights.update({k: v})
 
-    def to_json(file_path):
+
+    def to_json(self, file_path):
         pass
+    
     
     def analysis_relevance(self, X, y, R, 
                            predict_fn, eval_fn, 
-                           replace_method='zeros', percentile=90, delta=0.1):
+                           replace_method='zeros', percentile=90, delta=0.0):
         
         # Perturb instance based on percentile
         X_percentile = self.perturb(X, R, 

@@ -1,12 +1,13 @@
-"""Module to generate samples through perturbation."""
+""" Module to generate samples through perturbation. """
 import numpy as np
 from scipy import stats
 from abc import ABC, abstractmethod
 
 from . import replace as repl
 
+
 class AbstractPerturbation(ABC):
-    """Abstract Pertubation with abstract methods."""
+    """ Abstract Pertubation with abstract methods. """
 
     @abstractmethod
     def __init__(self, **kwargs):
@@ -54,6 +55,7 @@ class Perturbation(AbstractPerturbation):
         v = np.random.choice([0, 1], size=n_seg, p=[p, 1 - p])
         return v
 
+
     @staticmethod
     def _get_segment_mask(segm, on_off_segments):
         # Get binary on/off masks for segments
@@ -65,20 +67,22 @@ class Perturbation(AbstractPerturbation):
             mask[idx] = on_off_segments[i]
         return mask
 
+
     @staticmethod
-    def _get_similarity(x, z, method="kendalltau"):
+    def _get_similarity(x, z, method='kendalltau'):
         # Calculate pi/similarity between x and y:
         pi = 1
-        if method in ["pearsonr", "spearmanr", "kendalltau"]:
+        if method in ['pearsonr', 'spearmanr', 'kendalltau']:
             fn = getattr(stats, method)
             pi, _ = fn(x.ravel(), z.ravel())
             # avoid nan
             pi = np.nan_to_num(pi, 0.01)
         return pi
 
+
     @classmethod
     def get_sample(cls, x, segm, r=None, p_off=0.5):
-        """Get sample of x based on replace segments of x with r.
+        """ Get sample of x based on replace segments of x with r.
 
         Args:
             x (ndarray): A multivariate time series
@@ -101,6 +105,7 @@ class Perturbation(AbstractPerturbation):
         pi = cls._get_similarity(x, new_x)
         yield new_x, z_prime, pi
     
+    
     @classmethod
     def get_samples(cls, x, segm, replace_method='zeros', p_off=0.5, n_samples=10):    
         """ Perturb and generate sample sets from given time series and its segmentation.
@@ -120,6 +125,7 @@ class Perturbation(AbstractPerturbation):
         
         for _ in range(n_samples):
             yield from cls.get_sample(x, segm, r, p_off)
+    
     
     def perturb(self, ts, segments):
         """ Perturb and generate sample sets from given time series and its segmentation.
