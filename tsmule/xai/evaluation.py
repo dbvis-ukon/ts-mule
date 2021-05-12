@@ -78,7 +78,7 @@ class PerturbationBase:
             ndarray: a new perturbed instance of x.
         """
         repl_fn = getattr(repl, replace_method)
-        r = repl_fn(x)
+        r = repl_fn(x, m)
         assert x.shape == m.shape == r.shape
         z = x * m + r * (1 - m)
         return z

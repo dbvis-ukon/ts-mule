@@ -65,7 +65,36 @@ def test_analysis_relevance():
     assert all( k  in pa.insights.keys() for k in keys)
     assert all([pa.insights[k] == 1 for k in keys])
     
-   
+    
+def test_analysis_relevance_mean():
+    X = [mts, mts, mts]
+    y = [1, 2, 3]
+    
+    predict_ = lambda x: 1
+    predict_fn_x = lambda X: np.array([1 for x in X])
+    eval_fn = lambda y1, y2: 1
+    
+    explainer = LimeTS()
+    relevance = [explainer.explain(x, predict_) for x in X]
+       
+    pa = PerturbationAnalysis()
+    pa.analysis_relevance(X, y, relevance, 
+                          predict_fn=predict_fn_x,
+                          replace_method="local_mean",
+                          eval_fn=eval_fn)
+    keys = ['original', 'percentile', 'random']
+    assert all( k  in pa.insights.keys() for k in keys)
+    assert all([pa.insights[k] == 1 for k in keys])
+    
+    pa = PerturbationAnalysis()
+    pa.analysis_relevance(X, y, relevance, 
+                          predict_fn=predict_fn_x,
+                          replace_method="global_mean",
+                          eval_fn=eval_fn)
+    keys = ['original', 'percentile', 'random']
+    assert all( k  in pa.insights.keys() for k in keys)
+    assert all([pa.insights[k] == 1 for k in keys])
+    
 @pytest.mark.skip("Manuel Test")
 def test_analysis_relevance_manual():
     import dill 
