@@ -250,8 +250,8 @@ class WindowSegmentation(AbstractSegmentation):
         self.partitions = partitions
         self.win_length = max(3, win_length)
     
-    
-    def _segment_with_uniform(self, time_series_sample, m=4):
+    @staticmethod
+    def _segment_with_uniform(time_series_sample, m=4):
         """Segment a time series into uniform windows with the same window size.
 
         Notice: The window size at the end or begining could be smaller if n_steps % window_lenth != 0
@@ -259,8 +259,8 @@ class WindowSegmentation(AbstractSegmentation):
         n_steps, features = time_series_sample.shape
         assert n_steps > m, "Window size must be larger than n-steps"
 
-        starts = np.arange(0, n_steps, m)
-        ends = np.fmin(starts + m, n_steps)
+        starts = list(np.arange(0, n_steps, m))
+        ends = starts[1:] + [n_steps]
         
         segmentation_mask = np.zeros_like(time_series_sample)
         win_idx = 0
@@ -271,3 +271,48 @@ class WindowSegmentation(AbstractSegmentation):
         
         return segmentation_mask
     
+    @staticmethod
+    def _segment_with_exponential(time_series_sample):
+        """Segment a time series into exponential windows with the same window size."""
+        n_steps, features = time_series_sample.shape
+
+        # Get possible x (as window size) from exponential(x). Here try to make half of size
+        x = np.arange(np.ceil(np.log(n_steps)))
+        
+        win_sizes = [np.ceil(np.exp(i)).astype(int) for i in x]
+        
+        # Adjust to have total of win_sizes must be equal = n_steps
+        win_sizes[-1] = n_steps - sum(win_sizes[:-1])
+        
+        # Get starts and ends for each window
+        starts = [0] 
+        for i in range(len(win_sizes) - 1):
+            idx = starts[-1] + win_sizes[i]
+            starts.append(idx)
+        ends = starts[1:] + [n_steps]
+        
+        segmentation_mask = np.zeros_like(time_series_sample)
+        win_idx = 0
+        for feature in range(features):
+            for i, j in zip(starts, ends):
+                segmentation_mask[i: j, feature] = win_idx
+                win_idx +=1
+        
+        return segmentation_mask
+    
+    def segment(self, time_series_sample, segmentation_method='uniform'):
+        """ Time series instance segmentation into segments.
+        
+        Args:
+            time_series_sample (ndarray): Time series data (n_steps, n_features)
+            
+        Returns:
+            segmentation_mask: the segmentation mask of a time series. It has the same shape with time series sample.
+        """
+        time_series_sample = time_series_sample.astype(float)
+        if segmentation_method == 'uniform':
+            return self._segment_with_uniform(time_series_sample,
+                                             m=self.win_length, 
+                                             k=self.partitions)
+        if segmentation_method == 'exponential':
+            return self._segment_with_exponential(time_series_sample)
