@@ -1,6 +1,7 @@
 """ Module to calculate replacement. """
 import numpy as np
 
+
 def _reshape_x(x, segments):
     assert x.shape == segments.shape, (
             f'{x.shape} does not match with segments shape {segments.shape}')
@@ -42,6 +43,7 @@ def global_noise(x, segments, *_args, **_kwargs):
 
 def reference_set(ref_set, segments, *_args, **_kwargss):
     pass
+
 
 def inverse_max(x, *_args, **_kwargs):
     _, n_features = x.shape
