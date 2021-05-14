@@ -5,8 +5,10 @@ import numpy as np
 from ..sampling import replace as repl
 
 class PerturbationBase:
+    
     def __init__(self) -> None:
         pass
+    
     
     @staticmethod
     def mask_percentile(x, percentile=90):
@@ -26,6 +28,7 @@ class PerturbationBase:
         m = 1 - m   
         
         return m
+
 
     @staticmethod
     def _randomize(m, delta=0.0):

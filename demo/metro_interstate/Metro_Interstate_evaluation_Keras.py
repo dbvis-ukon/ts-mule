@@ -51,11 +51,11 @@ if __name__ == "__main__":
     print('Args:', perturb, start, end, model_name, segmentation_name)
     
     if model_name == 'cnn':
-        model = keras.models.load_model('./beijing_air_2_5_cnn_model.h5')
+        model = keras.models.load_model('./metro_traffic_cnn_model.h5')
     elif model_name == 'dnn':
-        model = keras.models.load_model('./beijing_air_2_5_dnn_model.h5')
+        model = keras.models.load_model('./metro_traffic_dnn_model.h5')
     elif model_name == 'rnn':
-        model = keras.models.load_model('./beijing_air_2_5_rnn_model.h5')
+        model = keras.models.load_model('./metro_traffic_rnn_model.h5')
     else:
         print('No model specified')
         exit
@@ -71,7 +71,7 @@ if __name__ == "__main__":
 
     if perturb == '':
 
-        with open('./beijing_air_2_5_test_data.dill', 'rb') as f:
+        with open('./metro_traffic_test_data.dill', 'rb') as f:
             dataset_test = dill.load(f)
 
         X = dataset_test[0][start:end]
@@ -121,7 +121,7 @@ if __name__ == "__main__":
 
         relevances_data = [X, y, relevances]
     
-        with open('./beijing_air_2_5_test_data_relevances_' + str(start) + '_' + str(end) + '_' + model_name + '_' + '.dill', 'wb') as f:
+        with open('./metro_traffic_test_data_relevances_' + str(start) + '_' + str(end) + '_' + model_name + '_' + '.dill', 'wb') as f:
             dill.dump(relevances_data, f)
         
     else:
@@ -193,5 +193,5 @@ if __name__ == "__main__":
             
             perturbation_data[key] = perturbation_data_for_key
         
-        with open('./beijing_air_2_5_test_data_perturbation_' + model_name + '_' + '.dill', 'wb') as f:
+        with open('./metro_traffic_test_data_perturbation_' + model_name + '_' + '.dill', 'wb') as f:
             dill.dump(perturbation_data, f)

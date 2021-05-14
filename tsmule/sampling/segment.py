@@ -35,6 +35,7 @@ class MatrixProfileSegmentation(AbstractSegmentation):
         self.partitions = partitions
         self.win_length = max(3, win_length)
 
+
     def _segment_with_slopes(self, time_series_sample, m=4, k=10, profile='min'):
         """ Time series instance segmentation into segments.
         
@@ -96,7 +97,7 @@ class MatrixProfileSegmentation(AbstractSegmentation):
             
         return segmentation_mask
 
-    
+
     @staticmethod
     def _segment_with_bins(time_series_sample, m=4, k=10, distance_method='max'):
         """ The methods divides the matrix profile distance into bins. 
@@ -149,6 +150,7 @@ class MatrixProfileSegmentation(AbstractSegmentation):
             seg_start = max(seg_m) + 1
         return segmentation_mask
 
+
     def segment(self, time_series_sample, segmentation_method='slopes'):
         """ Time series instance segmentation into segments.
         
@@ -183,6 +185,7 @@ class MatrixProfileSegmentation(AbstractSegmentation):
                                            k=self.partitions, 
                                            distance_method='min')
         
+    
 class SAXSegmentation(AbstractSegmentation):
     """ SAX Segmentation using a  on every feature."""
 
@@ -212,7 +215,7 @@ class SAXSegmentation(AbstractSegmentation):
         partitions = self.partitions
 
         # extract steps and features
-        _, n_features = time_series_sample.shape
+        n_steps, n_features = time_series_sample.shape
         
         # set first window index to 0
         win_idx = 0
@@ -223,7 +226,7 @@ class SAXSegmentation(AbstractSegmentation):
             n_bins = 3
 
             internal_win_idx = 0
-            while internal_win_idx < partitions * 9 / 10 or (internal_win_idx > partitions * 11 / 10 and internal_win_idx < partitions * 13 / 10):
+            while (internal_win_idx < partitions * 9 / 10 or (internal_win_idx > partitions * 11 / 10 and internal_win_idx < partitions * 13 / 10)) and n_bins < (n_steps - 1):
 
                 sax = SymbolicAggregateApproximation(n_bins=n_bins, strategy='quantile', alphabet='ordinal')
                 sax_transformation = sax.fit_transform(time_series_sample[:, feature].reshape(1, -1))
@@ -243,16 +246,18 @@ class SAXSegmentation(AbstractSegmentation):
 
         return segmentation_mask
 
+
 class WindowSegmentation(AbstractSegmentation):
-    """Windows segmentation with non-overlapping windows. """
+    """ Windows segmentation with non-overlapping windows. """
 
     def __init__(self, partitions, win_length=3):
         self.partitions = partitions
         self.win_length = max(3, win_length)
     
+    
     @staticmethod
     def _segment_with_uniform(time_series_sample, m=4):
-        """Segment a time series into uniform windows with the same window size.
+        """ Segment a time series into uniform windows with the same window size.
 
         Notice: The window size at the end or begining could be smaller if n_steps % window_lenth != 0
         """
@@ -271,9 +276,10 @@ class WindowSegmentation(AbstractSegmentation):
         
         return segmentation_mask
     
+    
     @staticmethod
     def _segment_with_exponential(time_series_sample):
-        """Segment a time series into exponential windows with the same window size."""
+        """ Segment a time series into exponential windows with the same window size."""
         n_steps, features = time_series_sample.shape
 
         # Get possible x (as window size) from exponential(x). Here try to make half of size
@@ -300,6 +306,7 @@ class WindowSegmentation(AbstractSegmentation):
         
         return segmentation_mask
     
+    
     def segment(self, time_series_sample, segmentation_method='uniform'):
         """ Time series instance segmentation into segments.
         
@@ -312,7 +319,20 @@ class WindowSegmentation(AbstractSegmentation):
         time_series_sample = time_series_sample.astype(float)
         if segmentation_method == 'uniform':
             return self._segment_with_uniform(time_series_sample,
-                                             m=self.win_length, 
-                                             k=self.partitions)
+                                             m=self.win_length)
         if segmentation_method == 'exponential':
             return self._segment_with_exponential(time_series_sample)
+        
+        
+class SegmentationPicker():
+    
+    @staticmethod
+    def select(method, partitions, win_length=0):
+        if method == 'sax':
+            return SAXSegmentation(partitions)
+        elif method == 'window':
+            return WindowSegmentation(partitions, win_length)
+        elif method == 'matrix':
+            return MatrixProfileSegmentation(partitions, win_length)
+        else:
+            return None

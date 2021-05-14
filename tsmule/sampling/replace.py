@@ -51,7 +51,7 @@ def inverse_max(x, *_args, **_kwargs):
     r = max_v - x
     return r
 
-def inverse_mean(x):
+def inverse_mean(x, *_args, **_kwargs):
     mean_v = global_mean(x)
     r = mean_v - x
     return r
