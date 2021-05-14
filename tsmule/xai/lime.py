@@ -9,6 +9,7 @@ from sklearn.model_selection import train_test_split
 from ..sampling.perturb import Perturbation
 from ..sampling.segment import MatrixProfileSegmentation
 
+
 class Kernels:
     """ Kernels for perturbation-based XAI method.
     Notice that we use scikit-learn linear-regression kernels. 
@@ -36,6 +37,7 @@ class AbstractXAI(ABC):
     def __init__(self) -> None:
         pass
     
+    
     @abstractclassmethod
     def explain(self, x, predict_fn, **kwargs):
         pass
@@ -52,13 +54,16 @@ class LimeBase(AbstractXAI):
         self._coef = None
         self._xcoef = None
         
+        
     @property
     def segment_coef(self):
         return self._coef
 
+
     @property
     def coef(self):
         return self._xcoef
+    
     
     @staticmethod
     def _explain(samples, kernel, predict_fn):
@@ -84,6 +89,7 @@ class LimeBase(AbstractXAI):
         
         return kernel, score
     
+    
     def explain(self, x, predict_fn, segmentation_method='slopes-max', **kwargs):
         
         _, features = x.shape
@@ -103,6 +109,7 @@ class LimeBase(AbstractXAI):
         
         return xcoef
 
+
     @staticmethod
     def to_original(coef, segments):
         """ Convert coef per segment to coef per point. """
@@ -116,6 +123,7 @@ class LimeBase(AbstractXAI):
             idx = (segments == l)
             x_coef[idx] = coef[i]
         return x_coef
+
 
 class LimeTS(LimeBase):
     def __init__(self, 
