@@ -46,8 +46,8 @@ class MatrixProfileSegmentation(AbstractSegmentation):
         Args:
             time_series_sample (ndarray): Time series data (n_steps, n_features)
             m (int, optional): Windows Size of subsequent to do matrix profile. Defaults to 4.
-            k (int, optional): Initial max number of partitions. The final result is possiblily smaller than k paritions. Defaults to 10.
-            profile (str, optional): Start the profile either at the minimas or the maximas ('min', 'max'). Defaults to 'min'.
+            k (int, optional): Number of partitions. Defaults to 10.
+            TODO: profile (str, optional): Start the profile either at the minimas or the maximas ('min', 'max'). Defaults to 'min'.
             
         Returns:
             segmentation_mask: the segmentation mask of a time series. It has the same shape with time series sample.
@@ -131,7 +131,7 @@ class MatrixProfileSegmentation(AbstractSegmentation):
             #   highest: more dissimilar -> discord classes
             bins = np.linspace(mp_d_min, mp_d_max, k)
             segments = np.digitize(mp_d, bins) - 1  # -1 to make start from 0
-            segments = seg_start + segments 
+            segments = seg_start + segments
             
             # unpack segments to time series
             #   Notice: For the shared points between two windows, the segment can be maximized, or minimized   
@@ -144,20 +144,22 @@ class MatrixProfileSegmentation(AbstractSegmentation):
 
             seg_m = np.full(n_steps, init_v)
             for i, s in enumerate(segments):
-                seg_m[i:i+m] = _fn(seg_m[i:i+m], s)
+                seg_m[i:i+m] = _fn(seg_m[i:i + m], s)
             
             segmentation_mask[:, feature] = seg_m
             seg_start = max(seg_m) + 1
         return segmentation_mask
 
 
-    def segment(self, time_series_sample, segmentation_method='slopes'):
+    def segment(self, time_series_sample, segmentation_method='slopes-min'):
         """ Time series instance segmentation into segments.
         
         Currently only with slopes but more is planned.
 
         Args:
             time_series_sample (ndarray): Time series data (n_steps, n_features)
+            segmentation_method (str, optional): Segmentation method to be used. 
+                Defaults to 'slopes-min'. Possible: slopes-min | slopes-max | bins-min | bins-max
             
         Returns:
             segmentation_mask: the segmentation mask of a time series. It has the same shape with time series sample.
@@ -223,11 +225,24 @@ class SAXSegmentation(AbstractSegmentation):
         # create a sax transformation for every feature
         for feature in range(n_features):
             
+            # check for constant values and use fixed windows for a segmentation
+            if np.min(time_series_sample[:, feature]) == np.max(time_series_sample[:, feature]):
+                win_len = int(n_steps / partitions)
+                for i in range(n_steps):
+                    if i % win_len == 0:
+                        win_idx += 1
+                    segmentation_mask[i, feature] = win_idx
+
+                win_idx += 1
+                continue
+
+            # start with a threshold bin size
             n_bins = 3
 
             internal_win_idx = 0
             while (internal_win_idx < partitions * 9 / 10 or (internal_win_idx > partitions * 11 / 10 and internal_win_idx < partitions * 13 / 10)) and n_bins < (n_steps - 1):
 
+                # create SAX transformation on the time series feature with the current bin count and use a quantile partition
                 sax = SymbolicAggregateApproximation(n_bins=n_bins, strategy='quantile', alphabet='ordinal')
                 sax_transformation = sax.fit_transform(time_series_sample[:, feature].reshape(1, -1))
 
@@ -312,6 +327,7 @@ class WindowSegmentation(AbstractSegmentation):
         
         Args:
             time_series_sample (ndarray): Time series data (n_steps, n_features)
+            segmentation_method (str, optional): Segmentation method to be used. Defaults to 'uniform'. Possible: uniform | exponential
             
         Returns:
             segmentation_mask: the segmentation mask of a time series. It has the same shape with time series sample.
