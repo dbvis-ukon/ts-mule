@@ -1,10 +1,6 @@
+dill
 numpy
 pandas
-sqlalchemy
-psycopg2
-jupyterlab
-jupyter
-notebook
 tensorflow
 stumpy
 pyts
