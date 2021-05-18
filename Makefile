@@ -2,9 +2,9 @@
 
 clean:
 	find . -name '*.py[co]' -delete
-	rm -rf *.lock *.dirlock worker-* build *.egg-info .pytest_* coverage-report .coverage*
-	rm -rf pgdata */__pycache*
-
+	find . -name '*__pycache__' -delete
+	rm -rf *.lock *.dirlock worker-* *.egg-info .pytest_* coverage-report .coverage*
+	rm -rf docs/build build whl/
 virtualenv:
 	rm -rf venv/
 	virtualenv --python python3 --prompt '|> ts-mule <| ' venv
