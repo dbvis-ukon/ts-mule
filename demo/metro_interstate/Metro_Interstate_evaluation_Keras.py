@@ -77,7 +77,7 @@ if __name__ == "__main__":
         X = dataset_test[0][start:end]
         y = dataset_test[1][start:end]
         
-        segmentations_to_process = segmentation_classes[segmentation_name] if segmentation_name != 'all' else segmentation_classes
+        segmentations_to_process = {segmentation_name: segmentation_classes[segmentation_name]} if segmentation_name != 'all' else segmentation_classes
         
         relevances = {}
         for segmentation in segmentations_to_process:
