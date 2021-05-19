@@ -240,7 +240,7 @@ class SAXSegmentation(AbstractSegmentation):
             n_bins = 3
 
             internal_win_idx = 0
-            while (internal_win_idx < partitions * 9 / 10 or (internal_win_idx > partitions * 11 / 10 and internal_win_idx < partitions * 13 / 10)) and n_bins < (n_steps - 1):
+            while (internal_win_idx < partitions * 8 / 10 or (internal_win_idx > partitions * 11 / 10 and internal_win_idx < partitions * 14 / 10)) and n_bins < (min(n_steps, 26) - 1):
 
                 # create SAX transformation on the time series feature with the current bin count and use a quantile partition
                 sax = SymbolicAggregateApproximation(n_bins=n_bins, strategy='quantile', alphabet='ordinal')
