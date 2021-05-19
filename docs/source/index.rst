@@ -1,12 +1,13 @@
 .. tsmule documentation
 
-Welcome to tsmule!
-======================
-Time Series Multivariate Local Explaination (tsmule) is an explainable AI framework.
+tsmule: An XAI framework for time series explanation!
+======================================================
+
 
 .. toctree::
    :maxdepth: 2
    
+   readme
    usage/installation
    usage/quickstart
    modules/modules

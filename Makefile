@@ -80,3 +80,4 @@ clean-docker:
 
 jupyter:
 	docker run -p 8888:8888 me/miniconda
+

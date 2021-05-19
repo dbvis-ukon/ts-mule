@@ -31,9 +31,13 @@ author = "Udo Schlegel, Duy Lam Vo"
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
 extensions = [
-    'sphinx.ext.napoleon',
-    'sphinx.ext.autodoc'
+    'sphinx.ext.napoleon',  # parse docstrings in numpy/googlde docstring
+    'sphinx.ext.autodoc',   # auto generate module
+    'm2r2'                   # insert md files (with source_suffix)
 ]
+
+# source_suffix = '.rst'
+source_suffix = ['.rst', '.md']
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']

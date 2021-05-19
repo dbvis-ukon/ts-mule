@@ -1,0 +1,10 @@
+-r requirements.txt
+
+pydocstyle
+flake8
+doc8
+wheel
+pytest
+pytest-cov
+sphinx
+m2r2

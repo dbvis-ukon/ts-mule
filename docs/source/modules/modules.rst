@@ -1,4 +1,4 @@
-Module tsmule
+Modules
 ===============
 
 .. toctree::
