@@ -1,6 +1,9 @@
 .PHONY: clean virtualenv test docker dist dist-upload
 
 clean:
+	@echo "-------------"
+	@echo "Cleaning		"
+	@echo "-------------"
 	find . -name '*.py[co]' -delete
 	find . -name '*__pycache__' -delete
 	rm -rf *.lock *.dirlock worker-* *.egg-info .pytest_* coverage-report .coverage*
@@ -56,7 +59,7 @@ lint:
 	flake8 --extend-ignore=E501 --exclude=env/
 	@echo
 
-html-docs:
+html-docs: clean
 	@echo "---------------------------"
 	@echo "Building html documentation"
 	@echo "---------------------------"

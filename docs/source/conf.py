@@ -14,15 +14,17 @@ import os
 import sys
 # if run `make html` from docs. 
 sys.path.insert(0, os.path.abspath('../../tsmule'))
-
+                
 # if use editor like vscode
-sys.path.insert(0, os.path.abspath('./tsmule'))
+# sys.path.insert(0, os.path.abspath('./tsmule'))
+
 
 # -- Project information -----------------------------------------------------
 
-project = 'tsmule'
-copyright = "2021, MIT license"
-author = "Udo Schlegel, Duy Lam Vo"
+project = "tsmule"
+author = "Udo Schlegel & Duy Lam Vo"
+copyright = f"2021, {author}"
+
 
 
 # -- General configuration ---------------------------------------------------
@@ -31,13 +33,16 @@ author = "Udo Schlegel, Duy Lam Vo"
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
 extensions = [
-    'sphinx.ext.napoleon',  # parse docstrings in numpy/googlde docstring
-    'sphinx.ext.autodoc',   # auto generate module
-    'm2r2'                   # insert md files (with source_suffix)
+    'sphinx.ext.autodoc',  
+    'sphinx.ext.doctest',   
+    'sphinx.ext.napoleon',  # parse docstrings in numpy/googlde docstring 
+    # 'sphinx.ext.mathjax',   # requires mathjax/latex
+    'IPython.sphinxext.ipython_console_highlighting',   # lexer ipython3
+    'nbsphinx',              # a source parser for *.ipynb files
 ]
 
 # source_suffix = '.rst'
-source_suffix = ['.rst', '.md']
+source_suffix = ['.rst', '.ipynb']
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
@@ -45,23 +50,25 @@ templates_path = ['_templates']
 # List of patterns, relative to source directory, that match files and
 # directories to ignore when looking for source files.
 # This pattern also affects html_static_path and html_extra_path.
-exclude_patterns = []
-
+exclude_patterns = ['**.ipynb_checkpoints']
 
 # -- Options for HTML output -------------------------------------------------
 
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes. bizstyle
 # 
-html_theme = 'alabaster'
+html_theme = 'sphinx_rtd_theme'
 
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
 html_static_path = ['_static']
 
-# -- Custom options for docstrings
+# -- Options for Napoleon extension -------------------------------------------
 # napoleon_google_docstring = False
 
 # To build module docs
 # sphinx-apidoc -f -o <path-to-output> <path-to-module>
+
+# -- Options for nbsphinx -------------------------------------------------
+nbsphinx_allow_errors = True
