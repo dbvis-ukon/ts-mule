@@ -1,3 +1,5 @@
+"""Package Information.
+"""
 #............................................................................
 #...............SSSSSS.......................................................
 #.TTTTTTTTTTT..SSSSSSSS...MMMMM...MMMMM..UUUU...UUUU..LLLL.......EEEEEEEEEE..
@@ -15,42 +17,13 @@
 #.....TTTT.....SSSSSSSSS..MMM.MMMMM.MMM...UUUUUUUUU...LLLLLLLLLL.EEEEEEEEEE..
 #...............SSSSSS......................UUUUU............................
 #............................................................................
-"""
-tsmule 
-~~~~~~~
-tsmule is an explainable AI library, written in Python, for time series explainations.
-TODO: change this following usages
-
-Basic GET usage:
-   >>> import tsmule
-   >>> r = requests.get('https://www.python.org')
-   >>> r.status_code
-   200
-   >>> b'Python is a programming language' in r.content
-   True
-... or POST:
-   >>> payload = dict(key1='value1', key2='value2')
-   >>> r = requests.post('https://httpbin.org/post', data=payload)
-   >>> print(r.text)
-   {
-     ...
-     "form": {
-       "key1": "value1",
-       "key2": "value2"
-     },
-     ...
-   }
-   
-The other HTTP methods are supported - see `requests.api`. Full documentation
-is at <https://requests.readthedocs.io>.
-:copyright: (c) 2017 by Kenneth Reitz.
-:license: Apache 2.0, see LICENSE for more details.
-"""
-
-# from .segment import MatrixProfileSegmentation, SAXSegmentation
-# from .perturb import Perturbation
-
-# __all__ = ['Perturbation', 
-#            'MatrixProfileSegmentation',
-#            'SAXSegmentation'
-#            ]
+__title__ = 'tsmule'
+__description__ = 'Explainable AI framwork for Time Series.'
+__url__ = 'https://tsmule.readthedocs.io'
+__version__ = '0.1.0'
+__author__ = 'Udo Schlegel & Duy Lam Vo'
+__author_email__ = "u.schlegel@uni-konstanz.de, duy-lam.vo1102@outlook.com"
+__license__ = 'MIT Apache 2.0'
+__copyright__ = f'2021, {__author__}'
+# __build__ = 0x022501
+# __cake__ = u'\u2728 \U0001f370 \u2728'

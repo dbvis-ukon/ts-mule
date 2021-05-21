@@ -1,5 +1,4 @@
-.. tsmule documentation
-
+======================================================
 tsmule: An XAI framework for time series explanation!
 ======================================================
 

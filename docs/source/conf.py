@@ -12,19 +12,18 @@
 #
 import os
 import sys
-# if run `make html` from docs. 
+from tsmule import __version__ as info
+
+# if run `make html` from docs.
 sys.path.insert(0, os.path.abspath('../../tsmule'))
-                
-# if use editor like vscode
-# sys.path.insert(0, os.path.abspath('./tsmule'))
 
 
 # -- Project information -----------------------------------------------------
-
-project = "tsmule"
-author = "Udo Schlegel & Duy Lam Vo"
-copyright = f"2021, {author}"
-
+project = info.__title__
+author = info.__author__
+copyright = info.__copyright__
+version = info.__version__
+license = info.__license__
 
 
 # -- General configuration ---------------------------------------------------
@@ -33,15 +32,14 @@ copyright = f"2021, {author}"
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
 extensions = [
-    'sphinx.ext.autodoc',  
-    'sphinx.ext.doctest',   
-    'sphinx.ext.napoleon',  # parse docstrings in numpy/googlde docstring 
-    # 'sphinx.ext.mathjax',   # requires mathjax/latex
+    'sphinx.ext.autodoc',
+    'sphinx.ext.doctest',
+    'sphinx.ext.napoleon',      # parser for docstrings numpy/google
+    # 'sphinx.ext.mathjax',     # requires mathjax/latex
     'IPython.sphinxext.ipython_console_highlighting',   # lexer ipython3
-    'nbsphinx',              # a source parser for *.ipynb files
+    'nbsphinx',                 # parser for *.ipynb files
 ]
 
-# source_suffix = '.rst'
 source_suffix = ['.rst', '.ipynb']
 
 # Add any paths that contain templates here, relative to this directory.
@@ -56,7 +54,7 @@ exclude_patterns = ['**.ipynb_checkpoints']
 
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes. bizstyle
-# 
+#
 html_theme = 'sphinx_rtd_theme'
 
 # Add any paths that contain custom static files (such as style sheets) here,

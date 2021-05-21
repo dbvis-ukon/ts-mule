@@ -1,4 +1,5 @@
 from setuptools import find_packages, setup
+from tsmule import __version__ as info
 
 with open('README.md', 'r') as fh:
     long_description = fh.read()
@@ -10,20 +11,14 @@ packages = find_packages(
     exclude=('tests*',)
 )
 
-package_name = "tsmule"
-author = "Udo Schlegel, Duy Lam Vo"
-author_email = "u.schlegel@uni-konstanz.de, duy-lam.vo1102@outlook.com"
-description = package_name
-version = '0.0.1'
-url = 'https://github.com/dbvis-ukon/ts-mule'
 
-setup(name=package_name,
-      version=version,
-      author=author,
-      author_email=author_email,
-      description=description,
+setup(name=info.__title__,
+      version=info.__version__,
+      author=info.__author__,
+      author_email=info.__author_email__,
+      description=info.__description__,
       long_description=long_description,
-      url=url,
+      url=info.__url__,
       package_dir={'': package_dir},
       packages=packages,
       classifiers=[
