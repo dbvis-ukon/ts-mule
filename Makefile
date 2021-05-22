@@ -1,13 +1,18 @@
 .PHONY: clean virtualenv test docker dist dist-upload
 
+project = 'tsmule'
 clean:
+	@echo "-------------"
+	@echo "Cleaning		"
+	@echo "-------------"
 	find . -name '*.py[co]' -delete
-	rm -rf *.lock *.dirlock worker-* build *.egg-info .pytest_* coverage-report .coverage*
-	rm -rf pgdata */__pycache*
-
+	find . -name '*__pycache__' -delete
+	rm -rf *.lock *.dirlock worker-* .pytest_* coverage-report .coverage*
+	rm -rf docs/build build whl/
+	rm -rf $(project)/*.egg-info
 virtualenv:
 	rm -rf venv/
-	virtualenv --python python3 --prompt '|> ts-mule <| ' venv
+	virtualenv --python python3 --prompt '|> $(project) <| ' venv
 	venv/bin/pip install -r requirements.txt
 	venv/bin/python setup.py develop
 	@echo
@@ -16,7 +21,7 @@ virtualenv:
 
 virtualenv-dev:
 	rm -rf venv/
-	virtualenv --python python3 --prompt '|> ts-mule <| ' venv
+	virtualenv --python python3 --prompt '|> $(project) <| ' venv
 	venv/bin/pip install -r requirements-dev.txt
 	venv/bin/python setup.py develop
 	@echo
@@ -30,7 +35,7 @@ test:
 	@echo
 	python -m pytest \
 		-v \
-		--cov=tsmule \
+		--cov=$(project) \
 		--cov-report=term \
 		--cov-report=html:.coverage-report \
 		tests/
@@ -53,10 +58,12 @@ lint:
 	@echo "Linting project source code"
 	@echo "---------------------------"
 	@echo
-	flake8 --extend-ignore=E501 --exclude=env/
+	flake8 --extend-ignore=E501 \
+		--exclude=env/ \
+		--exclude=examples/
 	@echo
 
-html-docs:
+html-docs: clean
 	@echo "---------------------------"
 	@echo "Building html documentation"
 	@echo "---------------------------"
@@ -65,7 +72,7 @@ html-docs:
 	@echo
 
 docstyle:
-	pydocstyle
+	pydocstyle $(project)
 
 wheel: clean
 	python setup.py bdist_wheel -d whl
@@ -80,3 +87,4 @@ clean-docker:
 
 jupyter:
 	docker run -p 8888:8888 me/miniconda
+

@@ -1,3 +1,4 @@
+"""Package Information."""
 # ............................................................................
 # ...............SSSSSS.......................................................
 # .TTTTTTTTTTT..SSSSSSSS...MMMMM...MMMMM..UUUU...UUUU..LLLL.......EEEEEEEEEE..
@@ -15,18 +16,13 @@
 # .....TTTT.....SSSSSSSSS..MMM.MMMMM.MMM...UUUUUUUUU...LLLLLLLLLL.EEEEEEEEEE..
 # ...............SSSSSS......................UUUUU............................
 # ............................................................................
-"""tsmule is an explainable AI library, written in Python, for time series explainations.
-
->>> import tsmule
->>> print tsmule.__version__.__version__
-
-Full documentation is at <https://tsmule.readthedocs.io>.
-"""
-
-# from .segment import MatrixProfileSegmentation, SAXSegmentation
-# from .perturb import Perturbation
-
-# __all__ = ['Perturbation',
-#            'MatrixProfileSegmentation',
-#            'SAXSegmentation'
-#            ]
+__title__ = 'tsmule'
+__description__ = 'Explainable AI framwork for Time Series.'
+__url__ = 'https://tsmule.readthedocs.io'
+__version__ = '0.1.0'
+__author__ = 'Udo Schlegel & Duy Lam Vo'
+__author_email__ = "u.schlegel@uni-konstanz.de, duy-lam.vo1102@outlook.com"
+__license__ = 'MIT Apache 2.0'
+__copyright__ = f'2021, {__author__}'
+# __build__ = 0x022501
+# __cake__ = u'\u2728 \U0001f370 \u2728'
