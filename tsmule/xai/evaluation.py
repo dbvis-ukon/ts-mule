@@ -146,7 +146,7 @@ class PerturbationAnalysis(PerturbationBase):
     def analysis_relevance(self, X, y, R,
                            predict_fn, eval_fn,
                            replace_method='zeros', percentile=90, delta=0.0):
-        """Analysis of relevance, proposed by Udo Schlegel in [1]_.
+        """Analysis of relevance, proposed by Udo Schlegel [1]_.
 
         The analysis perturb the test set X based on its relevance. Then the new generated test sets,
         including `original`, perturbed `percentile`, and perturbed `random` test sets.
@@ -154,7 +154,7 @@ class PerturbationAnalysis(PerturbationBase):
 
         If error(`original`) <= error(`random`) <= error(`percentile`), then the explanation is valid.
 
-        .. [1]: Schlegel, U., Arnout, H., El-Assady, M., Oelke, D., & Keim, D. A. (2019).
+        .. [1] Schlegel, U., Arnout, H., El-Assady, M., Oelke, D., & Keim, D. A. (2019).
             Towards A Rigorous Evaluation Of XAI Methods On Time Series.
             In 2019 IEEE/CVF International Conference on Computer Vision Workshop (ICCVW).
             (pp. 4321-4325).
