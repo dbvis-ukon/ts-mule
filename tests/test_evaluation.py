@@ -32,7 +32,7 @@ def test_mask_randomize():
 
     n_steps, _ = x.shape
     n_offs = (m == 0).sum(axis=0)
-    p_offs = n_offs/n_steps
+    p_offs = n_offs / n_steps
     assert all(p_offs < 0.50)
 
     # MTS
@@ -44,7 +44,7 @@ def test_mask_randomize():
     n_offs = (m == 0).sum(axis=0)
     n_offs = (np.ceil(n_offs * (1 + 0.1))).astype(int)
 
-    p_offs = n_offs/n_steps
+    p_offs = n_offs / n_steps
     assert all(p_offs < 0.50)
 
 
@@ -52,9 +52,14 @@ def test_analysis_relevance():
     X = [mts, mts, mts]
     y = [1, 2, 3]
 
-    def predict_(x): return 1
-    def predict_fn_x(X): return np.array([1 for x in X])
-    def eval_fn(y1, y2): return 1
+    def predict_(x):
+        return 1
+
+    def predict_fn_x(X):
+        return np.array([1 for x in X])
+
+    def eval_fn(y1, y2):
+        return 1
 
     explainer = LimeTS()
     relevance = [explainer.explain(x, predict_) for x in X]

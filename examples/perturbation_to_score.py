@@ -17,7 +17,7 @@ with open(path, 'rb') as f:
         scores[key] = {}
 
         for method in data[key]:
-            if data[key][method] == None:
+            if data[key][method] == None:   # noqa E711
                 continue
 
             d = data[key][method]

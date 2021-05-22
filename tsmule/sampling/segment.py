@@ -24,7 +24,8 @@ class AbstractSegmentation(ABC):
             time_series_sample (ndarray): Time series data (n_steps, n_features)
 
         Returns:
-            segmentation_mask: the segmentation mask of a time series. It has the same shape with time series sample.
+            segmentation_mask: the segmentation mask of a time series.
+                It has the same shape with time series sample.
         """
         pass
 
@@ -49,11 +50,13 @@ class MatrixProfileSegmentation(AbstractSegmentation):
          - Take the matrix profile of a time series and sort the distances.
          - Calculate the slope of this new matrix profile and take partition largest ones.
 
+        TODO: update using with profile
         Args:
             time_series_sample (ndarray): Time series data (n_steps, n_features)
             m (int, optional): Windows Size of subsequent to do matrix profile. Defaults to 4.
             k (int, optional): Number of partitions. Defaults to 10.
-            TODO: profile (str, optional): Start the profile either at the minimas or the maximas ('min', 'max'). Defaults to 'min'.
+            profile (str, optional): Start the profile either at the minimas or the maximas ('min', 'max').
+            Defaults to 'min'.
 
         Returns:
             segmentation_mask: the segmentation mask of a time series. It has the same shape with time series sample.
@@ -114,11 +117,14 @@ class MatrixProfileSegmentation(AbstractSegmentation):
         Args:
             time_series_sample (ndarray): Time series data (n_steps, n_features)
             m (int, optional): Windows Size of subsequent to do matrix profile. Defaults to 4.
-            k (int, optional): Initial max number of partitions. The final result is possiblily smaller than k paritions. Defaults to 10.
-            distance_method (str, optional): Minimize or maximize the shared points between two windows. Options can be `min`, `max`. Defaults to "max".
+            k (int, optional): Initial max number of partitions. Defaults to 10.
+                The final result is possiblily smaller than k paritions. Defaults to "max".
+            distance_method (str, optional): Options can be `min`, `max`.
+                Minimize or maximize the shared points between two windows.
 
         Returns:
-            segmentation_mask: the segmentation mask of a time series. It has the same shape with time series sample.
+            segmentation_mask: the segmentation mask of a time series.
+                It has the same shape with time series sample.
         """
         n_steps, n_features = time_series_sample.shape
         segmentation_mask = np.zeros_like(time_series_sample)
@@ -151,7 +157,7 @@ class MatrixProfileSegmentation(AbstractSegmentation):
 
             seg_m = np.full(n_steps, init_v)
             for i, s in enumerate(segments):
-                seg_m[i:i+m] = _fn(seg_m[i:i + m], s)
+                seg_m[i: i + m] = _fn(seg_m[i: i + m], s)
 
             segmentation_mask[:, feature] = seg_m
             seg_start = max(seg_m) + 1
@@ -168,7 +174,8 @@ class MatrixProfileSegmentation(AbstractSegmentation):
                 Defaults to 'slopes-min'. Possible: slopes-min | slopes-max | bins-min | bins-max
 
         Returns:
-            segmentation_mask: the segmentation mask of a time series. It has the same shape with time series sample.
+            segmentation_mask: the segmentation mask of a time series.
+                It has the same shape with time series sample.
         """
         time_series_sample = time_series_sample.astype(float)
         if segmentation_method == 'slopes-min':
@@ -249,9 +256,17 @@ class SAXSegmentation(AbstractSegmentation):
             n_bins = 3
 
             internal_win_idx = 0
-            while (internal_win_idx < partitions * 8 / 10 or (internal_win_idx > partitions * 11 / 10 and internal_win_idx < partitions * 14 / 10)) and n_bins < (min(n_steps, 26) - 1):
+            while True:
+                if not (n_bins < (min(n_steps, 26) - 1)):
+                    break
+                if not (internal_win_idx < partitions * 8 / 10):
+                    if not (internal_win_idx > partitions * 11 / 10):
+                        break
+                    if not (internal_win_idx < partitions * 14 / 10):
+                        break
 
-                # create SAX transformation on the time series feature with the current bin count and use a quantile partition
+                # create SAX transformation on the time series feature with the current bin count and
+                #   use a quantile partition
                 sax = SymbolicAggregateApproximation(
                     n_bins=n_bins, strategy='quantile', alphabet='ordinal')
                 sax_transformation = sax.fit_transform(
@@ -343,7 +358,8 @@ class WindowSegmentation(AbstractSegmentation):
 
         Args:
             time_series_sample (ndarray): Time series data (n_steps, n_features)
-            segmentation_method (str, optional): Segmentation method to be used. Defaults to 'uniform'. Possible: uniform | exponential
+            segmentation_method (str, optional): Segmentation method to be used. Defaults to 'uniform'.
+                Possible: uniform | exponential
 
         Returns:
             segmentation_mask: the segmentation mask of a time series. It has the same shape with time series sample.

@@ -41,7 +41,9 @@ def test_base_explain():
     # Arguments
     sampler = Perturbation()
     kernel = Kernels.Lasso
-    def predict_fn(x): return 1
+
+    def predict_fn(x):
+        return 1
     lime = LimeBase()
 
     samples = sampler.get_samples(ts, segm_ts, n_samples=100)
@@ -55,7 +57,9 @@ def test_base_explain():
 
 def test_ts_explain():
     lime_ts = LimeTS(n_samples=1000)
-    def predict_fn(x): return x.sum()
+
+    def predict_fn(x):
+        return x.sum()
 
     coef = lime_ts.explain(mts, predict_fn)
     assert all(coef.ravel() >= 0)
@@ -86,7 +90,7 @@ def test_explain_cnn():
     n_steps, features = sample.shape
     fig = plt.figure()
     for i in range(features):
-        fig.add_subplot(features, 1, i+1)
+        fig.add_subplot(features, 1, i + 1)
         plt.plot(sample[:, i])
     plt.show()
 
@@ -97,7 +101,7 @@ def test_explain_cnn():
     seg_m = explainer._segmenter.segment(sample, "slopes-max")
     fig = plt.figure()
     for i in range(features):
-        fig.add_subplot(features, 1, i+1)
+        fig.add_subplot(features, 1, i + 1)
         plt.scatter(range(n_steps), sample[:, i], c=seg_m[:, i])
     plt.show()
 
@@ -106,7 +110,7 @@ def test_explain_cnn():
     new_s, z_prime, pi = next(perturbed_samples)
     fig = plt.figure()
     for i in range(features):
-        fig.add_subplot(features, 1, i+1)
+        fig.add_subplot(features, 1, i + 1)
         plt.plot(new_s[:, i])
     plt.show()
 
@@ -124,6 +128,6 @@ def test_explain_cnn():
 
     fig = plt.figure()
     for i in range(features):
-        fig.add_subplot(features, 1, i+1)
+        fig.add_subplot(features, 1, i + 1)
         plt.scatter(range(n_steps), xcoef[:, i], c=seg_m[:, i], marker="*")
     plt.show()
