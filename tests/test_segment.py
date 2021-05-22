@@ -17,17 +17,17 @@ mts = np.stack([ts, ts2], axis=1)
 @pytest.mark.skip('Manual test.')
 def test_segment_max():
     mseg = MatrixProfileSegmentation(partitions=10, win_length=4)
-    
+
     seg_m = mseg._segment_with_bins(ts.values.reshape(-1, 1), 4, 10, 'max')
     plt.scatter(range(n), ts, c=seg_m)
     plt.show()
-    
+
     seg_m = mseg._segment_with_bins(ts.values.reshape(-1, 1), 4, 10, 'min')
     plt.scatter(range(n), ts, c=seg_m)
     plt.show()
-    
+
     seg_mts = mseg._segment_with_bins(mts, 4, 10, 'min')
-    _, ax = plt.subplots(2,1)
-    ax[0].scatter(range(n), mts[:, 0], c=seg_mts[:,0])
-    ax[1].scatter(range(n), mts[:, 1], c=seg_mts[:,1])
+    _, ax = plt.subplots(2, 1)
+    ax[0].scatter(range(n), mts[:, 0], c=seg_mts[:, 0])
+    ax[1].scatter(range(n), mts[:, 1], c=seg_mts[:, 1])
     plt.show()

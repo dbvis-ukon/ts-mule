@@ -1,3 +1,4 @@
+"""Setup module."""
 from setuptools import find_packages, setup
 from tsmule import __version__ as info
 

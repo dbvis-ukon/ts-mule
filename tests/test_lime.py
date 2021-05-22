@@ -44,7 +44,6 @@ def test_base_explain():
 
     def predict_fn(x):
         return 1
-
     lime = LimeBase()
 
     samples = sampler.get_samples(ts, segm_ts, n_samples=100)
@@ -72,6 +71,7 @@ def test_explain_cnn():
     import dill
     import matplotlib.pyplot as plt
     from tensorflow import keras
+    from sklearn import linear_model
 
     data_dir = "demo/beijing_air_2_5"
     cnn_model = keras.models.load_model(
@@ -120,7 +120,6 @@ def test_explain_cnn():
     plt.show()
 
     # Explain the model
-    from sklearn import linear_model
     explainer = LimeTS(n_samples=100)
 
     Lasso = linear_model.Lasso(alpha=.01)
