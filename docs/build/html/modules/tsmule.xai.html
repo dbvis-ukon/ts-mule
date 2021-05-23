@@ -1,0 +1,574 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>tsmule.xai package &mdash; tsmule  documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="prev" title="tsmule.sampling package" href="tsmule.sampling.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> tsmule
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.1.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../usage/installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage/quick_start.html">Quick Start</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">Modules</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="tsmule.html">tsmule</a><ul class="current">
+<li class="toctree-l3 current"><a class="reference internal" href="tsmule.html#subpackages">Subpackages</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="tsmule.sampling.html">tsmule.sampling package</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">tsmule.xai package</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="tsmule.html#module-tsmule">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">tsmule</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="modules.html">Modules</a> &raquo;</li>
+        
+          <li><a href="tsmule.html">tsmule</a> &raquo;</li>
+        
+      <li>tsmule.xai package</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="../_sources/modules/tsmule.xai.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  
+<style>
+/* CSS overrides for sphinx_rtd_theme */
+
+/* 24px margin */
+.nbinput.nblast.container,
+.nboutput.nblast.container {
+    margin-bottom: 19px;  /* padding has already 5px */
+}
+
+/* ... except between code cells! */
+.nblast.container + .nbinput.container {
+    margin-top: -19px;
+}
+
+.admonition > p:before {
+    margin-right: 4px;  /* make room for the exclamation icon */
+}
+
+/* Fix math alignment, see https://github.com/rtfd/sphinx_rtd_theme/pull/686 */
+.math {
+    text-align: unset;
+}
+</style>
+<div class="section" id="tsmule-xai-package">
+<h1>tsmule.xai package<a class="headerlink" href="#tsmule-xai-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-tsmule.xai.evaluation">
+<span id="tsmule-xai-evaluation-module"></span><h2>tsmule.xai.evaluation module<a class="headerlink" href="#module-tsmule.xai.evaluation" title="Permalink to this headline">¶</a></h2>
+<p>Evaluation module for explainers.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="tsmule.xai.evaluation.PerturbationAnalysis">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">tsmule.xai.evaluation.</span></span><span class="sig-name descname"><span class="pre">PerturbationAnalysis</span></span><a class="headerlink" href="#tsmule.xai.evaluation.PerturbationAnalysis" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#tsmule.xai.evaluation.PerturbationBase" title="tsmule.xai.evaluation.PerturbationBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">tsmule.xai.evaluation.PerturbationBase</span></code></a></p>
+<p>Module for relevance analysis based on perturbation method.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="tsmule.xai.evaluation.PerturbationAnalysis.add_insight">
+<span class="sig-name descname"><span class="pre">add_insight</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">k</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">v</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#tsmule.xai.evaluation.PerturbationAnalysis.add_insight" title="Permalink to this definition">¶</a></dt>
+<dd><p>Store the result to the insights dict.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>k</strong> (<em>str</em>) – name of the insight/evalutation</p></li>
+<li><p><strong>v</strong> (<em>float</em>) – value/score of the evaluation.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tsmule.xai.evaluation.PerturbationAnalysis.analysis_relevance">
+<span class="sig-name descname"><span class="pre">analysis_relevance</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">X</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">R</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">predict_fn</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">eval_fn</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">replace_method</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'zeros'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">percentile</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">90</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">delta</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#tsmule.xai.evaluation.PerturbationAnalysis.analysis_relevance" title="Permalink to this definition">¶</a></dt>
+<dd><p>Analysis of relevance, proposed by Udo Schlegel <a class="footnote-reference brackets" href="#id2" id="id1">1</a>.</p>
+<p>The analysis perturb the test set X based on its relevance. Then the new generated test sets,
+including <cite>original</cite>, perturbed <cite>percentile</cite>, and perturbed <cite>random</cite> test sets.
+These test sets are evaluated and compared each other.</p>
+<p>If error(<cite>original</cite>) &lt;= error(<cite>random</cite>) &lt;= error(<cite>percentile</cite>), then the explanation is valid.</p>
+<dl class="footnote brackets">
+<dt class="label" id="id2"><span class="brackets"><a class="fn-backref" href="#id1">1</a></span></dt>
+<dd><p>Schlegel, U., Arnout, H., El-Assady, M., Oelke, D., &amp; Keim, D. A. (2019).
+Towards A Rigorous Evaluation Of XAI Methods On Time Series.
+In 2019 IEEE/CVF International Conference on Computer Vision Workshop (ICCVW).
+(pp. 4321-4325).</p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>X</strong> (<em>Iterable</em>) – Instances with shape (n_steps, features).</p></li>
+<li><p><strong>y</strong> (<em>Iterable</em>) – True values of input X.</p></li>
+<li><p><strong>R</strong> (<em>Iterable</em>) – Relevances for each instance with shape (n_steps, features).</p></li>
+<li><p><strong>predict_fn</strong> (<em>[</em><em>type</em><em>]</em>) – [description]</p></li>
+<li><p><strong>eval_fn</strong> (<em>[</em><em>type</em><em>]</em>) – [description]</p></li>
+<li><p><strong>replace_method</strong> (<em>str</em><em>, </em><em>optional</em>) – method to replace disabled. Defaults to “zeros”.</p></li>
+<li><p><strong>shuffle</strong> (<em>bool</em><em>, </em><em>optional</em>) – If true, then random. Defaults to False.
+The relevance is randomized based on number of disabled relevance.</p></li>
+<li><p><strong>percentile</strong> (<em>int</em><em>, </em><em>optional</em>) – [description]. Defaults to 90.</p></li>
+<li><p><strong>delta</strong> (<em>float</em><em>, </em><em>optional</em>) – Increase/decrease the number of disabled relevance.
+Defaults to 0.0.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Scores of ‘original’, ‘percentile’ and ‘random’ test.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tsmule.xai.evaluation.PerturbationAnalysis.to_json">
+<span class="sig-name descname"><span class="pre">to_json</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file_path</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#tsmule.xai.evaluation.PerturbationAnalysis.to_json" title="Permalink to this definition">¶</a></dt>
+<dd><p>Dumpy insights to json file.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="tsmule.xai.evaluation.PerturbationBase">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">tsmule.xai.evaluation.</span></span><span class="sig-name descname"><span class="pre">PerturbationBase</span></span><a class="headerlink" href="#tsmule.xai.evaluation.PerturbationBase" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Base module for relevance analysis based on perturbation method.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="tsmule.xai.evaluation.PerturbationBase.mask_percentile">
+<em class="property"><span class="pre">static</span> </em><span class="sig-name descname"><span class="pre">mask_percentile</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">percentile</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">90.0</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#tsmule.xai.evaluation.PerturbationBase.mask_percentile" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a mask based on percentile for the relevance.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<em>ndarray</em>) – Relevance or coefficient.</p></li>
+<li><p><strong>percentile</strong> (<em>float</em><em>, </em><em>optional</em>) – Percentile of relevance to mask. Defaults to 90.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>an ndarray mask of 0s and 1s. Same shape with x.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>ndarray</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tsmule.xai.evaluation.PerturbationBase.mask_randomize">
+<em class="property"><span class="pre">classmethod</span> </em><span class="sig-name descname"><span class="pre">mask_randomize</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">percentile</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">90</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">delta</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#tsmule.xai.evaluation.PerturbationBase.mask_randomize" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create mask based on percentile, then randomize the number of masked ones.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<em>ndarray</em>) – Relevance or coefficient.</p></li>
+<li><p><strong>percentile</strong> (<em>float</em><em>, </em><em>optional</em>) – Percentile of relevance to mask. Defaults to 90.</p></li>
+<li><p><strong>delta</strong> (<em>float</em><em>, </em><em>optional</em>) – Specifiy when you want to increase or decrease the number of masked one.
+Defaults to 0.0.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>an randomized mask of 0s and 1s. Same shape with x.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>ndarray</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tsmule.xai.evaluation.PerturbationBase.perturb">
+<span class="sig-name descname"><span class="pre">perturb</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">X</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">R</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">replace_method</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'zeros'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">percentile</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">90</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">shuffle</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">delta</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#tsmule.xai.evaluation.PerturbationBase.perturb" title="Permalink to this definition">¶</a></dt>
+<dd><p>Perturb list of time series.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>X</strong> (<em>Iterable</em>) – Instances with shape (n_steps, features).</p></li>
+<li><p><strong>R</strong> (<em>Iterable</em>) – Relevances for each instance with shape (n_steps, features).</p></li>
+<li><p><strong>replace_method</strong> (<em>str</em><em>, </em><em>optional</em>) – method to replace disabled. Defaults to “zeros”.</p></li>
+<li><p><strong>shuffle</strong> (<em>bool</em><em>, </em><em>optional</em>) – If true, then random. Defaults to False.
+The relevance is randomized based on number of disabled relevance.</p></li>
+<li><p><strong>delta</strong> (<em>float</em><em>, </em><em>optional</em>) – Increase/decrease the number of disabled relevance.
+Defaults to 0.0.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Yields</dt>
+<dd class="field-even"><p><em>ndarray</em> – multiple perturbed instances</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-tsmule.xai.lime">
+<span id="tsmule-xai-lime-module"></span><h2>tsmule.xai.lime module<a class="headerlink" href="#module-tsmule.xai.lime" title="Permalink to this headline">¶</a></h2>
+<p>Explain a time series with LIME algorithm.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="tsmule.xai.lime.AbstractXAI">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">tsmule.xai.lime.</span></span><span class="sig-name descname"><span class="pre">AbstractXAI</span></span><a class="headerlink" href="#tsmule.xai.lime.AbstractXAI" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">abc.ABC</span></code></p>
+<p>Abstract module for explainable AI.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="tsmule.xai.lime.AbstractXAI.explain">
+<em class="property"><span class="pre">abstract</span> <span class="pre">classmethod</span> </em><span class="sig-name descname"><span class="pre">explain</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">predict_fn</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#tsmule.xai.lime.AbstractXAI.explain" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generate explaination for time series x, given a model or predict function.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<em>ndarray</em>) – Time series x with (n_steps, n_features)</p></li>
+<li><p><strong>predict_fn</strong> (<em>function</em>) – Predict function of the model.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="tsmule.xai.lime.Kernels">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">tsmule.xai.lime.</span></span><span class="sig-name descname"><span class="pre">Kernels</span></span><a class="headerlink" href="#tsmule.xai.lime.Kernels" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Kernels for perturbation-based XAI method.</p>
+<p>Notice that we use scikit-learn linear-regression kernels.
+There are two main fitting types in fitting the model: fit, and partial fit.
+Fit means we see all samples as a whole, while partial fit (or online learning with mini batches) is
+more benefitial in scaling.</p>
+<dl class="simple">
+<dt>reference:</dt><dd><ul class="simple">
+<li><p><a class="reference external" href="https://scikit-learn.org/stable/modules/classes.html#module-sklearn.linear_model">https://scikit-learn.org/stable/modules/classes.html#module-sklearn.linear_model</a></p></li>
+<li><p><a class="reference external" href="https://scikit-learn.org/stable/modules/linear_model.html#linear-model">https://scikit-learn.org/stable/modules/linear_model.html#linear-model</a></p></li>
+<li><p><a class="reference external" href="https://scikit-learn.org/0.15/modules/scaling_strategies.html">https://scikit-learn.org/0.15/modules/scaling_strategies.html</a></p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="tsmule.xai.lime.Kernels.Lasso">
+<span class="sig-name descname"><span class="pre">Lasso</span></span><em class="property"> <span class="pre">=</span> <span class="pre">Lasso(alpha=0.01)</span></em><a class="headerlink" href="#tsmule.xai.lime.Kernels.Lasso" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="tsmule.xai.lime.Kernels.Ridge">
+<span class="sig-name descname"><span class="pre">Ridge</span></span><em class="property"> <span class="pre">=</span> <span class="pre">Ridge(alpha=0.01)</span></em><a class="headerlink" href="#tsmule.xai.lime.Kernels.Ridge" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="tsmule.xai.lime.Kernels.SGDClassifier">
+<span class="sig-name descname"><span class="pre">SGDClassifier</span></span><em class="property"> <span class="pre">=</span> <span class="pre">SGDClassifier()</span></em><a class="headerlink" href="#tsmule.xai.lime.Kernels.SGDClassifier" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="tsmule.xai.lime.Kernels.SGDRegressor">
+<span class="sig-name descname"><span class="pre">SGDRegressor</span></span><em class="property"> <span class="pre">=</span> <span class="pre">SGDRegressor()</span></em><a class="headerlink" href="#tsmule.xai.lime.Kernels.SGDRegressor" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="tsmule.xai.lime.LimeBase">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">tsmule.xai.lime.</span></span><span class="sig-name descname"><span class="pre">LimeBase</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">kernel</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sampler</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">segmenter</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#tsmule.xai.lime.LimeBase" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#tsmule.xai.lime.AbstractXAI" title="tsmule.xai.lime.AbstractXAI"><code class="xref py py-class docutils literal notranslate"><span class="pre">tsmule.xai.lime.AbstractXAI</span></code></a></p>
+<p>Module of LIME in explaining a model.</p>
+<dl class="py property">
+<dt class="sig sig-object py" id="tsmule.xai.lime.LimeBase.coef">
+<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">coef</span></span><a class="headerlink" href="#tsmule.xai.lime.LimeBase.coef" title="Permalink to this definition">¶</a></dt>
+<dd><p>Coefficient of all time points.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>All coefficients of the time series. It has same shape with the time series explained.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>ndarray</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tsmule.xai.lime.LimeBase.explain">
+<span class="sig-name descname"><span class="pre">explain</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">predict_fn</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">segmentation_method</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'slopes-max'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#tsmule.xai.lime.LimeBase.explain" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generate explaination for a time series.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<em>ndarays</em>) – a time series with shape n_steps, n_features</p></li>
+<li><p><strong>predict_fn</strong> (<em>function</em>) – Function to make the prediction given the input of x.
+For keras models, the predict_fn is <cite>keras_model.predict</cite>.
+Because the keras model accept input of shape (n_sample, n_steps, n_features),
+so it is recommended that the model should handle both single or multiple instances.</p></li>
+<li><p><strong>segmentation_method</strong> (<em>str</em><em>, </em><em>optional</em>) – Segmentation method as cited in the paper.
+Defaults to ‘slopes-max’.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Coefficients of all points in the time series. Same shape with the time series.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>ndarray</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="tsmule.xai.lime.LimeBase.segment_coef">
+<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">segment_coef</span></span><a class="headerlink" href="#tsmule.xai.lime.LimeBase.segment_coef" title="Permalink to this definition">¶</a></dt>
+<dd><p>Coefficient per segment (array).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Array of coefficient/relevance.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>array</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tsmule.xai.lime.LimeBase.to_original">
+<em class="property"><span class="pre">static</span> </em><span class="sig-name descname"><span class="pre">to_original</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">coef</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">segments</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#tsmule.xai.lime.LimeBase.to_original" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert coef per segment to coef per point.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>coef</strong> (<em>array</em>) – Coefficients of unique segments.</p></li>
+<li><p><strong>segments</strong> (<em>ndarray</em>) – Original segmentations of its time series.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>coefficients of each point and have same shape with the time series (n_steps, n_features).</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>ndarray</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="tsmule.xai.lime.LimeTS">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">tsmule.xai.lime.</span></span><span class="sig-name descname"><span class="pre">LimeTS</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">kernel</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">segmenter</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sampler</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">partitions</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">win_length</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">-</span> <span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">p_off</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">replace_method</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'zeros'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_samples</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#tsmule.xai.lime.LimeTS" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#tsmule.xai.lime.LimeBase" title="tsmule.xai.lime.LimeBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">tsmule.xai.lime.LimeBase</span></code></a></p>
+<p>LIME explainer for time series.</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-tsmule.xai.viz">
+<span id="tsmule-xai-viz-module"></span><h2>tsmule.xai.viz module<a class="headerlink" href="#module-tsmule.xai.viz" title="Permalink to this headline">¶</a></h2>
+<p>Visualization supporting tools.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="tsmule.xai.viz.visualize_segmentation_mask">
+<span class="sig-prename descclassname"><span class="pre">tsmule.xai.viz.</span></span><span class="sig-name descname"><span class="pre">visualize_segmentation_mask</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">time_series_sample</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">segmentation_mask</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#tsmule.xai.viz.visualize_segmentation_mask" title="Permalink to this definition">¶</a></dt>
+<dd><p>Visualize time series and its segementation.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>time_series_sample</strong> (<em>ndarrays</em>) – A time series with shape n_steps, n_features</p></li>
+<li><p><strong>segmentation_mask</strong> (<em>ndarrays</em>) – A generated segmentation of the time series.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="section" id="module-tsmule.xai">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-tsmule.xai" title="Permalink to this headline">¶</a></h2>
+<p>Explainable AI core module to generate explanation and evaluation.</p>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+        <a href="tsmule.sampling.html" class="btn btn-neutral float-left" title="tsmule.sampling package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2021, Udo Schlegel &amp; Duy Lam Vo.
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
