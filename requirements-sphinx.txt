@@ -1,0 +1,8 @@
+-r requirements.txt
+
+jinja2<3.0      # conflict with nbformat
+sphinx
+nbsphinx        # convert notebook -> rst
+pandoc          # nbsphinx dependency for converting markdown
+ipython
+sphinx_rtd_theme    # readthedocs
