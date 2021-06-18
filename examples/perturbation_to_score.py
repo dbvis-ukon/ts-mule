@@ -7,17 +7,20 @@ def percentage_change(org, new):
 
 path = './'
 
+# open result file of perturbations
 with open(path, 'rb') as f:
     data = dill.load(f)
 
     scores = {}
 
+    # loop through segmentation technqiues
     for key in data:
 
         scores[key] = {}
 
+        # loop through perturbation methods
         for method in data[key]:
-            if data[key][method] == None:   # noqa E711
+            if data[key][method] is None:
                 continue
 
             d = data[key][method]
