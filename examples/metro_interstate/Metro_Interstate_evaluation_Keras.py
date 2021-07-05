@@ -35,7 +35,7 @@ if __name__ == "__main__":
     
     
     segmentation_classes = {
-        'matrix': ['slopes-min', 'slopes-max', 'bins-min', 'bins-max'], 
+        'matrix': ['slopes-sorted', 'slopes-not-sorted', 'bins-min', 'bins-max'], 
         'sax': [''], 
         'window': ['uniform', 'exponential']}
     
