@@ -1,6 +1,8 @@
 dill
-numpy
+numpy == 1.19.2
 pandas
-tensorflow
+tensorflow == 2.5.0
 stumpy
 pyts
+
+matplotlib
