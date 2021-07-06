@@ -403,7 +403,7 @@ class SegmentationPicker:
             return SAXSegmentation(partitions)
         elif method == 'window':
             return WindowSegmentation(partitions, win_length)
-        elif method == 'matrix':
+        elif 'matrix' in method:
             return MatrixProfileSegmentation(partitions, win_length)
         else:
             return None
