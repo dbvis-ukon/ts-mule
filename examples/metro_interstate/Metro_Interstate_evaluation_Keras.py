@@ -104,7 +104,8 @@ if __name__ == "__main__":
                     
                     try:
                         explanation = explainer.explain(x, predict_fn, segmentation_method=parameter)
-                    except:
+                    except Exception as e:
+                        print(e)
                         print('Error')
                         explanation = None
 
