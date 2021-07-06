@@ -31,11 +31,12 @@ if __name__ == "__main__":
     parser.add_argument('-end', type=int, default=1000, nargs='?', help='an integer for the end index')
     parser.add_argument('-start', type=int, default=0, nargs='?', help='an integer for the start index')
     parser.add_argument('-model', type=str, default='cnn', nargs='?', help='a model name for the evaluation [cnn | rnn | dnn]')
-    parser.add_argument('-segm', type=str, default='all', nargs='?', help='a segmentation name for the evaluation [all | matrix | sax | window]')
+    parser.add_argument('-segm', type=str, default='all', nargs='?', help='a segmentation name for the evaluation [all | matrix-slope | matrix-bins | sax | window]')
     
     
     segmentation_classes = {
-        'matrix': ['slopes-sorted', 'slopes-not-sorted', 'bins-min', 'bins-max'], 
+        'matrix-slope': ['slopes-sorted', 'slopes-not-sorted'],
+        'matrix-bins': ['bins-min', 'bins-max'], 
         'sax': [''], 
         'window': ['uniform', 'exponential']}
     
