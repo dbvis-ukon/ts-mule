@@ -1,6 +1,6 @@
 # Time Series Multivariate and Univariate Local Explanations (TS-MULE)
 
-Repository for the paper "Local Interpretable Model-AgnosticExplanations For Time Series Forecast Models" submitted to AIMLAI 2021.
+Repository for the paper "Local Interpretable Model-Agnostic Explanations For Time Series Forecast Models" submitted to AIMLAI 2021.
 It is a general extension of LIME [1] for univariate and multivariate time series.
 We therefore extend LIME with a selection of segmentation algorithms for input data.
 Further, strategies for the perturbation of the segmented input data is presented.
@@ -36,5 +36,5 @@ This project has received funding from the European Union’s Horizon 2020 resea
 
 # References
 
-[1]: Ribeiro, M. T., Singh, S., & Guestrin, C. (2016, August). " Why should i trust you?" Explaining the predictions of any classifier. In Proceedings of the 22nd ACM SIGKDD international conference on knowledge discovery and data mining (pp. 1135-1144).  
+[1]: Ribeiro, M. T., Singh, S., & Guestrin, C. (2016, August). "Why should i trust you?" Explaining the predictions of any classifier. In Proceedings of the 22nd ACM SIGKDD international conference on knowledge discovery and data mining (pp. 1135-1144).  
 [2]: Schlegel, U., Arnout, H., El-Assady, M., Oelke, D., & Keim, D. A. (2019). Towards A Rigorous Evaluation Of XAI Methods On Time Series. In 2019 IEEE/CVF International Conference on Computer Vision Workshop (ICCVW) (pp. 4321-4325).

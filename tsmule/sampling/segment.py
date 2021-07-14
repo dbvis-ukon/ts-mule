@@ -11,6 +11,7 @@ from pyts.approximation import SymbolicAggregateApproximation
 class AbstractSegmentation(ABC):
     """Abstract Segmentation with abstract methods."""
 
+
     @abstractmethod
     def __init__(self):
         """Abstract construct."""

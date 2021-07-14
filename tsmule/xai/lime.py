@@ -36,10 +36,12 @@ class Kernels:
 class AbstractXAI(ABC):
     """Abstract module for explainable AI."""
 
+
     @abstractclassmethod
     def __init__(self) -> None:
         """Abstract construct."""
         pass
+
 
     @abstractclassmethod
     def explain(self, x, predict_fn, **kwargs):
@@ -54,6 +56,7 @@ class AbstractXAI(ABC):
 
 class LimeBase(AbstractXAI):
     """Module of LIME in explaining a model."""
+
 
     def __init__(self, kernel=None, sampler=None, segmenter=None) -> None:
         """Construct perturbation base explainer.
@@ -74,6 +77,7 @@ class LimeBase(AbstractXAI):
         self._coef = None
         self._xcoef = None
 
+
     @property
     def segment_coef(self):
         """Coefficient per segment (array).
@@ -83,6 +87,7 @@ class LimeBase(AbstractXAI):
         """
         return self._coef
 
+
     @property
     def coef(self):
         """Coefficient of all time points.
@@ -91,6 +96,7 @@ class LimeBase(AbstractXAI):
             ndarray: All coefficients of the time series. It has same shape with the time series explained.
         """
         return self._xcoef
+
 
     @staticmethod
     def _explain(samples, kernel, predict_fn):
@@ -116,6 +122,7 @@ class LimeBase(AbstractXAI):
         score = metrics.r2_score(y_test, y_pred)
 
         return kernel, score
+
 
     def explain(self, x, predict_fn, segmentation_method='slopes-max', **kwargs):
         """Generate explaination for a time series.
@@ -149,6 +156,7 @@ class LimeBase(AbstractXAI):
         xcoef = self.to_original(coef, seg_m)
 
         return xcoef
+
 
     @staticmethod
     def to_original(coef, segments):

@@ -9,12 +9,14 @@ from . import replace as repl
 class AbstractPerturbation(ABC):
     """Abstract Pertubation with abstract methods."""
 
+
     @abstractmethod
     def __init__(self, **kwargs):
         """Abstract construction."""
         self.p_off = None
         self.repl_method = None
         self.n_samples = None
+
 
     @abstractmethod
     def perturb(self, ts, segments):
@@ -46,6 +48,7 @@ class Perturbation(AbstractPerturbation):
         self.repl_method = method
         self.n_samples = n_samples
 
+
     @staticmethod
     def _get_on_off_segments(segm, p=0.5):
         # Get n_seg
@@ -55,6 +58,7 @@ class Perturbation(AbstractPerturbation):
         # 0 = off/disabled/replaced, 1 = on/keep/unchanged
         v = np.random.choice([0, 1], size=n_seg, p=[p, 1 - p])
         return v
+
 
     @staticmethod
     def _get_segment_mask(segm, on_off_segments):
@@ -67,6 +71,7 @@ class Perturbation(AbstractPerturbation):
             mask[idx] = on_off_segments[i]
         return mask
 
+
     @staticmethod
     def _get_similarity(x, z, method='kendalltau'):
         # Calculate pi/similarity between x and y:
@@ -77,6 +82,7 @@ class Perturbation(AbstractPerturbation):
             # avoid nan
             pi = np.nan_to_num(pi, 0.01)
         return pi
+
 
     @classmethod
     def get_sample(cls, x, segm, r=None, p_off=0.5):
@@ -103,6 +109,7 @@ class Perturbation(AbstractPerturbation):
         pi = cls._get_similarity(x, new_x)
         yield new_x, z_prime, pi
 
+
     @classmethod
     def get_samples(cls, x, segm, replace_method='zeros', p_off=0.5, n_samples=10):
         """Perturb and generate sample sets from given time series and its segmentation.
@@ -122,6 +129,7 @@ class Perturbation(AbstractPerturbation):
 
         for _ in range(n_samples):
             yield from cls.get_sample(x, segm, r, p_off)
+
 
     def perturb(self, ts, segments):
         """Perturb and generate sample sets from given time series and its segmentation.
