@@ -1,6 +1,6 @@
 # Time Series Multivariate and Univariate Local Explanations (TS-MULE)
 
-Repository for the paper "Local Interpretable Model-Agnostic Explanations For Time Series Forecast Models" submitted to AIMLAI 2021.
+Repository for the paper "Local Interpretable Model-Agnostic Explanations For Time Series Forecast Models" submitted to [AIMLAI 2021](https://project.inria.fr/aimlai/ "Advances in Interpretable Machine Learning and Artificial Intelligence 2021").
 It is a general extension of LIME [1] for univariate and multivariate time series.
 We therefore extend LIME with a selection of segmentation algorithms for input data.
 Further, strategies for the perturbation of the segmented input data is presented.
@@ -11,7 +11,8 @@ We focus on six different segmentation ideas:
  - uniform segmentation based on a fixed window size
  - exponential segmentation based on a exponentially growing wndow
  - SAX segmentation based on the SAX transformation to symbols
- - Slopes segmentation based on the gradient of the matrix profile
+ - Slopes-sorted segmentation based on the gradient of the matrix profile
+ - Slopes-not-sorted segmentation based on the gradient of the matrix profile
  - Bins-min segmentation based on a binning variant of the matrix profile
  - Bins-max segmentation based on a binning variant of the matrix profile
   
@@ -24,8 +25,7 @@ And three different replacement strategies:
 We evaluate the previous proposed segmentation algorithms for TS-MULE with a perturbation analysis based on Schlegel et al. [2].
 In our paper, we focused on zero perturbation, but we als have the results for zero, inverse-mean, and global-mean.  
   
-![Results](./figures/results.PNG)  
-The color scale ranges from blue (best) to red (worst).  
+![Results](./figures/TS-MULE_Results.PNG)  
 In general, we advise to use uniform or one of the bins (e.g., bins-min) for short window lengths.   
 For larger window lengths, we suggest slopes as it works best, but also the bins (e.g., bins-min) work quite well.  
   

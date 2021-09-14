@@ -106,8 +106,7 @@ class LimeBase(AbstractXAI):
         z_hat = list(map(predict_fn, new_x))
 
         # Try to approximate g(z') ~ f(new_x) <=> g(z') = Z'* W ~ Z_hat
-        _t = train_test_split(z_prime, z_hat, pi,
-                              test_size=0.3, random_state=42)
+        _t = train_test_split(z_prime, z_hat, pi, test_size=0.3, random_state=42)
         X, X_test, y, y_test, sw, sw_test = _t
 
         # Avoid nan in similarity
@@ -141,8 +140,7 @@ class LimeBase(AbstractXAI):
         """
         _, features = x.shape
         # Get segmentation masks
-        seg_m = self._segmenter.segment(
-            x, segmentation_method=segmentation_method)
+        seg_m = self._segmenter.segment(x, segmentation_method=segmentation_method)
 
         # Generate samples
         samples = self._sampler.perturb(x, seg_m)
@@ -216,7 +214,6 @@ class LimeTS(LimeBase):
         """
         kernel = kernel or Kernels.Lasso
         sampler = sampler or Perturbation(p_off, replace_method, n_samples)
-        segmenter = segmenter or MatrixProfileSegmentation(
-            partitions, win_length)
+        segmenter = segmenter or MatrixProfileSegmentation(partitions, win_length)
 
         super().__init__(kernel=kernel, sampler=sampler, segmenter=segmenter)

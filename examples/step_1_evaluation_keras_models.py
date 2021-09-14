@@ -105,7 +105,7 @@ if __name__ == "__main__":
             relevances_temp = []
 
             for i, x in enumerate(X):
-                explainer = LimeTS()
+                explainer = LimeTS(n_samples=1000)
                     
                 # set linear model
                 lasso_classifier = linear_model.Lasso(alpha=0.001)
