@@ -24,6 +24,9 @@ def visualize_segmentation_mask(time_series_sample, segmentation_mask):
 
     _, ax = plt.subplots(n_features, 1)
     for i in range(n_features):
-        ax[i].scatter(range(n_steps), time_series_sample[:, i],
-                      c=segmentation_mask[:, i])
+        ax[i].scatter(range(n_steps), time_series_sample[:, i],  c=segmentation_mask[:, i])
     plt.show()
+
+
+def visualize_perturbation_masks():
+    pass

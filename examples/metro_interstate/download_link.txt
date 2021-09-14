@@ -1,1 +1,7 @@
 https://drive.google.com/drive/folders/1AIPSL3S1XRQ4SX1i7MrsbvQXtPH40AQU?usp=sharing
+
+https://drive.google.com/file/d/1OxJ-kEA5fZ9Fk0GzzibU_34_7oyArBdF/view?usp=sharing metro_traffic_cnn_model.h5
+https://drive.google.com/file/d/1gYoniKV14ZHEg3Jaji70v14OlJYrxNLz/view?usp=sharing metro_traffic_dnn_model.h5
+https://drive.google.com/file/d/15S94Uje5tRT23wJzaICnsZpabwfkdoH0/view?usp=sharing metro_traffic_rnn_model.h5
+https://drive.google.com/file/d/14snEohoTFtdwQ59OUaIh6QjV8iH19iMO/view?usp=sharing metro_traffic_test_data_reduced.dill
+https://drive.google.com/file/d/1s2TmdF7ikZFnYqf4uJ3owsL2rEZY04jA/view?usp=sharing metro_traffic_test_data.dill

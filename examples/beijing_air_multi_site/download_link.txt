@@ -1,1 +1,7 @@
 https://drive.google.com/drive/folders/1YAYm1Il-1haV50nQNsHKydL1OGPwMidl?usp=sharing
+
+https://drive.google.com/file/d/1Jq5tBnw3-5UNtAxvJVicmvsES5QOcfl4/view?usp=sharing beijing_air_multi_site_cnn_model.h5
+https://drive.google.com/file/d/1Uml9MaTc4bKEscPQilal_We6vBbJLOHS/view?usp=sharing beijing_air_multi_site_dnn_model.h5
+https://drive.google.com/file/d/10EsW7e_N7nik1sGdleMfoiyuGJ352LCl/view?usp=sharing beijing_air_multi_site_rnn_model.h5
+https://drive.google.com/file/d/1KSpM_ZNrmRyENhh3go5QfccHVD-r42YN/view?usp=sharing beijing_air_multi_site_test_data_reduced.dill
+https://drive.google.com/file/d/1mdK53mz1uo4WX-kmuObqFw3zCB5ZG8uN/view?usp=sharing beijing_air_multi_site_test_data.dill

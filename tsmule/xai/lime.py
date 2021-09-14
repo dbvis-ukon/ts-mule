@@ -36,10 +36,12 @@ class Kernels:
 class AbstractXAI(ABC):
     """Abstract module for explainable AI."""
 
+
     @abstractclassmethod
     def __init__(self) -> None:
         """Abstract construct."""
         pass
+
 
     @abstractclassmethod
     def explain(self, x, predict_fn, **kwargs):
@@ -54,6 +56,7 @@ class AbstractXAI(ABC):
 
 class LimeBase(AbstractXAI):
     """Module of LIME in explaining a model."""
+
 
     def __init__(self, kernel=None, sampler=None, segmenter=None) -> None:
         """Construct perturbation base explainer.
@@ -74,6 +77,7 @@ class LimeBase(AbstractXAI):
         self._coef = None
         self._xcoef = None
 
+
     @property
     def segment_coef(self):
         """Coefficient per segment (array).
@@ -82,6 +86,7 @@ class LimeBase(AbstractXAI):
             array: Array of coefficient/relevance.
         """
         return self._coef
+
 
     @property
     def coef(self):
@@ -92,6 +97,7 @@ class LimeBase(AbstractXAI):
         """
         return self._xcoef
 
+
     @staticmethod
     def _explain(samples, kernel, predict_fn):
         # Unpack samples
@@ -100,8 +106,7 @@ class LimeBase(AbstractXAI):
         z_hat = list(map(predict_fn, new_x))
 
         # Try to approximate g(z') ~ f(new_x) <=> g(z') = Z'* W ~ Z_hat
-        _t = train_test_split(z_prime, z_hat, pi,
-                              test_size=0.3, random_state=42)
+        _t = train_test_split(z_prime, z_hat, pi, test_size=0.3, random_state=42)
         X, X_test, y, y_test, sw, sw_test = _t
 
         # Avoid nan in similarity
@@ -116,6 +121,7 @@ class LimeBase(AbstractXAI):
         score = metrics.r2_score(y_test, y_pred)
 
         return kernel, score
+
 
     def explain(self, x, predict_fn, segmentation_method='slopes-max', **kwargs):
         """Generate explaination for a time series.
@@ -134,8 +140,7 @@ class LimeBase(AbstractXAI):
         """
         _, features = x.shape
         # Get segmentation masks
-        seg_m = self._segmenter.segment(
-            x, segmentation_method=segmentation_method)
+        seg_m = self._segmenter.segment(x, segmentation_method=segmentation_method)
 
         # Generate samples
         samples = self._sampler.perturb(x, seg_m)
@@ -149,6 +154,7 @@ class LimeBase(AbstractXAI):
         xcoef = self.to_original(coef, seg_m)
 
         return xcoef
+
 
     @staticmethod
     def to_original(coef, segments):
@@ -208,7 +214,6 @@ class LimeTS(LimeBase):
         """
         kernel = kernel or Kernels.Lasso
         sampler = sampler or Perturbation(p_off, replace_method, n_samples)
-        segmenter = segmenter or MatrixProfileSegmentation(
-            partitions, win_length)
+        segmenter = segmenter or MatrixProfileSegmentation(partitions, win_length)
 
         super().__init__(kernel=kernel, sampler=sampler, segmenter=segmenter)

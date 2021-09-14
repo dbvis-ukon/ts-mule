@@ -8,9 +8,11 @@ from ..sampling import replace as repl
 class PerturbationBase:
     """Base module for relevance analysis based on perturbation method."""
 
+
     def __init__(self) -> None:
         """Construct of perturbation base module."""
         pass
+
 
     @staticmethod
     def mask_percentile(x, percentile=90.):
@@ -39,6 +41,7 @@ class PerturbationBase:
         m = 1 - m
 
         return m
+
 
     @staticmethod
     def _randomize(m, delta=0.0):
@@ -69,6 +72,7 @@ class PerturbationBase:
 
         return random_mask
 
+
     @classmethod
     def mask_randomize(cls, x, percentile=90, delta=0.0):
         """Create mask based on percentile, then randomize the number of masked ones.
@@ -86,6 +90,7 @@ class PerturbationBase:
         m = cls._randomize(m, delta)
         return m
 
+
     @staticmethod
     def _perturb(x, m, replace_method='zeros'):
         repl_fn = getattr(repl, replace_method)
@@ -93,6 +98,7 @@ class PerturbationBase:
         assert x.shape == m.shape == r.shape
         z = x * m + r * (1 - m)
         return z
+
 
     def perturb(self, X, R, replace_method="zeros", percentile=90, shuffle=False, delta=0.0):
         """Perturb list of time series.
@@ -124,11 +130,13 @@ class PerturbationBase:
 class PerturbationAnalysis(PerturbationBase):
     """Module for relevance analysis based on perturbation method."""
 
+
     def __init__(self,) -> None:
         """Construct analysis class for perturbation method."""
         super().__init__()
 
         self.insights = dict()
+
 
     def add_insight(self, k, v):
         """Store the result to the insights dict.
@@ -139,14 +147,16 @@ class PerturbationAnalysis(PerturbationBase):
         """
         self.insights.update({k: v})
 
+
     def to_json(self, file_path):
         """Dumpy insights to json file."""
         pass
 
+
     def analysis_relevance(self, X, y, R,
                            predict_fn, eval_fn,
                            replace_method='zeros', percentile=90, delta=0.0):
-        """Analysis of relevance, proposed by Udo Schlegel [1]_.
+        """Analysis of relevance, proposed by Schlegel et al.[1].
 
         The analysis perturb the test set X based on its relevance. Then the new generated test sets,
         including `original`, perturbed `percentile`, and perturbed `random` test sets.
