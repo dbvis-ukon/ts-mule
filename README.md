@@ -25,7 +25,7 @@ And three different replacement strategies:
 We evaluate the previous proposed segmentation algorithms for TS-MULE with a perturbation analysis based on Schlegel et al. [2].
 In our paper, we focused on zero perturbation, but we als have the results for zero, inverse-mean, and global-mean.  
   
-![Results](./figures/TS-MULE_Results.PNG)  
+![Results](./resources/TS-MULE_Results.PNG)  
 In general, we advise to use uniform or one of the bins (e.g., bins-min) for short window lengths.   
 For larger window lengths, we suggest slopes as it works best, but also the bins (e.g., bins-min) work quite well.  
   
