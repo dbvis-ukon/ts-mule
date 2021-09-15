@@ -206,6 +206,8 @@ class MatrixProfileSegmentation(AbstractSegmentation):
                                            k=self.partitions,
                                            distance_method='min')
 
+        raise ValueError()
+
 
 class SAXSegmentation(AbstractSegmentation):
     """SAX Segmentation using a on every feature."""

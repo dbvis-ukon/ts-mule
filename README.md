@@ -15,11 +15,21 @@ We focus on six different segmentation ideas:
  - Slopes-not-sorted segmentation based on the gradient of the matrix profile
  - Bins-min segmentation based on a binning variant of the matrix profile
  - Bins-max segmentation based on a binning variant of the matrix profile
-  
+
 And three different replacement strategies:
  - Zero
  - Inverse
  - Mean
+
+# Comparison of segmentation algorithms on example time series
+
+![Comparison](./resources/AIMLAI_2021___TS_MULE_Comparison.PNG)
+
+# Workflow
+
+The correpsonding workflow with LIME adapted to time series.  
+![Workflow](./resources/TS-MULE_Workflow.PNG)  
+Our proposed segmetnation algorithms enable the first step.
 
 # Results
 We evaluate the previous proposed segmentation algorithms for TS-MULE with a perturbation analysis based on Schlegel et al. [2].
