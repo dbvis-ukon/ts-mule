@@ -28,7 +28,7 @@ And three different replacement strategies:
 # Workflow
 
 The correpsonding workflow with LIME adapted to time series.  
-![Workflow](./resources/TS-MULE_Workflow.PNG)  
+![Workflow](./resources/TS-MULE_Workflow.png)  
 Our proposed segmetnation algorithms enable the first step.
 
 # Results
