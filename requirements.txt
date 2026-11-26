@@ -1,8 +1,6 @@
-dill
-numpy == 1.19.2
-pandas
-tensorflow == 2.5.0
-stumpy
-pyts
-
-matplotlib
+numpy>=1.23
+scipy>=1.9
+scikit-learn>=1.2
+stumpy>=1.11
+pyts>=0.13
+matplotlib>=3.6

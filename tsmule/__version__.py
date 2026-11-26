@@ -17,12 +17,12 @@
 # ...............SSSSSS......................UUUUU............................
 # ............................................................................
 __title__ = 'tsmule'
-__description__ = 'Explainable AI framwork for Time Series.'
-__url__ = 'https://tsmule.readthedocs.io'
+__description__ = 'Explainable AI framework for Time Series.'
+__url__ = 'https://github.com/dbvis-ukon/ts-mule'
 __version__ = '0.1.0'
 __author__ = 'Udo Schlegel & Duy Lam Vo'
 __author_email__ = "u.schlegel@uni-konstanz.de, duy-lam.vo1102@outlook.com"
-__license__ = 'MIT Apache 2.0'
-__copyright__ = f'2021, {__author__}'
+__license__ = 'MIT'
+__copyright__ = f'2021-2026, {__author__}'
 # __build__ = 0x022501
 # __cake__ = u'\u2728 \U0001f370 \u2728'

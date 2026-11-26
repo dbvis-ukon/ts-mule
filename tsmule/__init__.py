@@ -15,18 +15,40 @@
 # .....TTTT.....SSSSSSSSS..MMM.MMMMM.MMM...UUUUUUUUU...LLLLLLLLLL.EEEEEEEEEE..
 # ...............SSSSSS......................UUUUU............................
 # ............................................................................
-"""tsmule is an explainable AI library, written in Python, for time series explainations.
+"""tsmule is an explainable AI library, written in Python, for time series explanations.
 
 >>> import tsmule
->>> print tsmule.__version__.__version__
-
-Full documentation is at <https://tsmule.readthedocs.io>.
+>>> print(tsmule.__version__.__version__)
 """
 
-# from .segment import MatrixProfileSegmentation, SAXSegmentation
-# from .perturb import Perturbation
+from . import __version__  # noqa: F401
+from .sampling.perturb import Perturbation
+from .sampling.segment import (
+    MatrixProfileSegmentation,
+    SAXSegmentation,
+    SegmentationPicker,
+    WindowSegmentation,
+)
+from .xai.evaluation import PerturbationAnalysis, PerturbationBase
+from .xai.lime import Kernels, LimeBase, LimeTS
+from .xai.viz import (
+    visualize_perturbation_masks,
+    visualize_relevance,
+    visualize_segmentation_mask,
+)
 
-# __all__ = ['Perturbation',
-#            'MatrixProfileSegmentation',
-#            'SAXSegmentation'
-#            ]
+__all__ = [
+    'Perturbation',
+    'MatrixProfileSegmentation',
+    'SAXSegmentation',
+    'WindowSegmentation',
+    'SegmentationPicker',
+    'Kernels',
+    'LimeBase',
+    'LimeTS',
+    'PerturbationBase',
+    'PerturbationAnalysis',
+    'visualize_segmentation_mask',
+    'visualize_perturbation_masks',
+    'visualize_relevance',
+]

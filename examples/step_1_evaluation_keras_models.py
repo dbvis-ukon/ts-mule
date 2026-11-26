@@ -68,8 +68,8 @@ if __name__ == "__main__":
 
     if data_path == '':
         print('No data found')
-        exit
-    
+        sys.exit(1)
+
     if model_name == 'dnn' and not dnn_path == '':
         model = keras.models.load_model(dnn_path)
     elif model_name == 'cnn' and not cnn_path == '':
@@ -78,7 +78,7 @@ if __name__ == "__main__":
         model = keras.models.load_model(rnn_path)
     else:
         print('No model specified or found')
-        exit
+        sys.exit(1)
 
 
     def predict_fn(x):

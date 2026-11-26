@@ -1,8 +1,21 @@
-"""Init module perturbation."""
-# from .segment import MatrixProfileSegmentation, SAXSegmentation
-# from .perturb import Perturbation
+"""Init module for sampling (segmentation, replacement, and perturbation)."""
+from . import replace
+from .perturb import AbstractPerturbation, Perturbation
+from .segment import (
+    AbstractSegmentation,
+    MatrixProfileSegmentation,
+    SAXSegmentation,
+    SegmentationPicker,
+    WindowSegmentation,
+)
 
-# __all__ = ['Perturbation',
-#            'MatrixProfileSegmentation',
-#            'SAXSegmentation'
-#            ]
+__all__ = [
+    'AbstractSegmentation',
+    'MatrixProfileSegmentation',
+    'SAXSegmentation',
+    'WindowSegmentation',
+    'SegmentationPicker',
+    'AbstractPerturbation',
+    'Perturbation',
+    'replace',
+]

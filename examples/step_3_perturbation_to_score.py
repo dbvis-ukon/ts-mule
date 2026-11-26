@@ -1,6 +1,8 @@
-import dill
-
 import argparse
+from os import listdir
+from os.path import isfile, join
+
+import dill
 
 
 if __name__ == "__main__":
@@ -11,16 +13,17 @@ if __name__ == "__main__":
     args = parser.parse_args()
     path = args.path
 
-    for f in listdir(path):
-        if isfile(join(path, f)) and 'perturbation' in f:
+    for filename in listdir(path):
+        full_path = join(path, filename)
+        if isfile(full_path) and 'perturbation' in filename:
 
             # open result file of perturbations
-            with open(join(path, f), 'rb') as f:
-                data = dill.load(f)
+            with open(full_path, 'rb') as fd:
+                data = dill.load(fd)
 
                 scores = {}
 
-                # loop through segmentation technqiues
+                # loop through segmentation techniques
                 for key in data:
 
                     scores[key] = {}
@@ -35,15 +38,19 @@ if __name__ == "__main__":
                         org = d['original']
                         per = d['percentile']
                         rnd = d['random']
-                        score = [
-                            (per - org) / (rnd - org),
-                            (per - rnd) / (rnd - org),
-                            per - org,
-                            rnd - org
-                        ]
+                        denom = rnd - org
+                        if denom == 0:
+                            score = [float('nan'), float('nan'), per - org, rnd - org]
+                        else:
+                            score = [
+                                (per - org) / denom,
+                                (per - rnd) / denom,
+                                per - org,
+                                rnd - org,
+                            ]
 
                         scores[key][method] = score
 
                 print('-' * 15)
-                print(f)
+                print(filename)
                 print(scores)

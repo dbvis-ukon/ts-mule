@@ -62,7 +62,7 @@ if __name__ == "__main__":
         model = keras.models.load_model(rnn_path)
     else:
         print('No model specified or found')
-        exit
+        sys.exit(1)
 
 
     def predict_fn(x):
@@ -124,8 +124,8 @@ if __name__ == "__main__":
             pa = PerturbationAnalysis()
             local_mean_scores = pa.analysis_relevance(X, y, rel, predict_fn=predict_fn, replace_method='local_mean', eval_fn=metrics.mean_squared_error, percentile=90)
             
-        except:
-            print('Error with:', key)
+        except Exception as e:
+            print('Error with:', key, e)
 
         perturbation_data_for_key = {
             'zero_scores': zero_scores,

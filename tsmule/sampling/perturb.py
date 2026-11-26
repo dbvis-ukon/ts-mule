@@ -1,14 +1,16 @@
 """Module to generate samples through perturbation."""
+from abc import ABC, abstractmethod
+
 import numpy as np
 from scipy import stats
-from abc import ABC, abstractmethod
 
 from . import replace as repl
 
+_STOCHASTIC_REPLACE_METHODS = {'random', 'local_noise', 'global_noise'}
+
 
 class AbstractPerturbation(ABC):
-    """Abstract Pertubation with abstract methods."""
-
+    """Abstract Perturbation with abstract methods."""
 
     @abstractmethod
     def __init__(self, **kwargs):
@@ -17,16 +19,16 @@ class AbstractPerturbation(ABC):
         self.repl_method = None
         self.n_samples = None
 
-
     @abstractmethod
     def perturb(self, ts, segments):
-        """Perturb a time series to create new sample with same shape.
+        """Perturb a time series to create new samples with the same shape.
 
-        :param ts: (np.array) A time series must be (n_steps, n_features)
-        :param segments: (np.array) A segments with labels of the time series must be (n_steps, n_features)
+        Args:
+            ts (np.ndarray): A time series of shape (n_steps,) or (n_steps, n_features).
+            segments (np.ndarray): Segment labels with the same shape as ts.
 
         Yields:
-            Generator: tuple of (new sample, on/off segments, similarity to original)
+            tuple: ``(new_sample, on_off_segments, similarity)``
         """
         pass
 
@@ -34,114 +36,123 @@ class AbstractPerturbation(ABC):
 class Perturbation(AbstractPerturbation):
     """Base Perturbation module."""
 
-    def __init__(self, p_off=0.5, method='zeros', n_samples=10):
+    def __init__(self, p_off=0.5, method='zeros', n_samples=10, random_state=None):
         """Construct perturbation base module.
 
         Args:
-            p_off (float, optional): Probability of disabling a segment. Default is 0.5
-            method (str, optional): Methods to replace parts of segmentation, including:
-                'zeros | global_mean | local_mean | inverse_mean | inverse_max'
-                Defaults to 'zeros'.
-            n_samples (int, optional): [description]. Defaults to 10.
+            p_off (float, optional): Probability of disabling a segment. Defaults to 0.5.
+            method (str, optional): Method to replace disabled segments:
+                ``'zeros' | 'global_mean' | 'local_mean' | 'inverse_mean' | 'inverse_max' | 'random' | 'local_noise' | 'global_noise'``.
+                Defaults to ``'zeros'``.
+            n_samples (int, optional): Number of perturbed samples to generate. Defaults to 10.
+            random_state (int or np.random.Generator, optional): Random seed or generator.
+                Defaults to None.
         """
         self.p_off = p_off
         self.repl_method = method
         self.n_samples = n_samples
-
+        self.random_state = random_state
 
     @staticmethod
-    def _get_on_off_segments(segm, p=0.5):
-        # Get n_seg
+    def _get_on_off_segments(segm, p=0.5, random_state=None):
         n_seg = len(np.unique(segm))
-
-        # Get on off segments
+        rng = np.random.default_rng(random_state)
         # 0 = off/disabled/replaced, 1 = on/keep/unchanged
-        v = np.random.choice([0, 1], size=n_seg, p=[p, 1 - p])
-        return v
-
+        return rng.choice([0, 1], size=n_seg, p=[p, 1 - p])
 
     @staticmethod
     def _get_segment_mask(segm, on_off_segments):
-        # Get binary on/off masks for segments
         labels = np.unique(segm)
-        n_segs = len(labels)
         mask = np.ones_like(segm)
-        for i in range(n_segs):
-            idx = (segm == labels[i])
-            mask[idx] = on_off_segments[i]
+        for i, label in enumerate(labels):
+            mask[segm == label] = on_off_segments[i]
         return mask
-
 
     @staticmethod
     def _get_similarity(x, z, method='kendalltau'):
-        # Calculate pi/similarity between x and y:
-        pi = 1
-        if method in ['pearsonr', 'spearmanr', 'kendalltau']:
+        pi = 1.0
+        if method in ('pearsonr', 'spearmanr', 'kendalltau'):
             fn = getattr(stats, method)
-            pi, _ = fn(x.ravel(), z.ravel())
-            # avoid nan
-            pi = np.nan_to_num(pi, 0.01)
+            pi, _ = fn(np.asarray(x).ravel(), np.asarray(z).ravel())
+            pi = float(np.nan_to_num(pi, nan=0.01))
         return pi
 
-
     @classmethod
-    def get_sample(cls, x, segm, r=None, p_off=0.5):
-        """Get sample of x based on replace segments of x with r.
+    def get_sample(cls, x, segm, r=None, p_off=0.5, random_state=None):
+        """Get a perturbed sample of x by replacing disabled segments with r.
 
         Args:
-            x (ndarray): A multivariate time series
-            segm (ndarray): A segmentation of x, having same shape with x
-            r (ndarray): A replacements of x when create a new sample
-            p_off (float, optional): Probility of disabling a segmentation. Defaults to 0.5.
+            x (ndarray): Input time series.
+            segm (ndarray): Segmentation mask with the same shape as x.
+            r (ndarray, optional): Replacement values with the same shape as x. Defaults to zeros.
+            p_off (float, optional): Probability of disabling a segment. Defaults to 0.5.
+            random_state (int or np.random.Generator, optional): Random seed or generator.
+
         Yields:
-            Generator: a tuple of (new sample, on/off segments, similarity to original)
+            tuple: ``(new_x, z_prime, pi)``
         """
+        x = np.asarray(x, dtype=float)
         if r is None:
-            r = np.zeros_like(x)
+            r = np.zeros_like(x, dtype=float)
         assert r.shape == x.shape == segm.shape
 
-        # On/off vector z', used to fit into XAI linear regression
-        z_prime = cls._get_on_off_segments(segm, p_off)
+        z_prime = cls._get_on_off_segments(segm, p_off, random_state=random_state)
         mask = cls._get_segment_mask(segm, z_prime)
 
-        # get new x sample, when mask = 1, then keep x, else replace it
         new_x = x * mask + r * (1 - mask)
         pi = cls._get_similarity(x, new_x)
         yield new_x, z_prime, pi
 
-
     @classmethod
-    def get_samples(cls, x, segm, replace_method='zeros', p_off=0.5, n_samples=10):
-        """Perturb and generate sample sets from given time series and its segmentation.
+    def get_samples(
+        cls,
+        x,
+        segm,
+        replace_method='zeros',
+        p_off=0.5,
+        n_samples=10,
+        random_state=None,
+    ):
+        """Perturb and generate sample sets from a time series and its segmentation.
 
         Args:
-            ts (np.ndarray): A time series with shape (n_steps, n_features)
-            segments (np.ndarray): A segmentation of the time series with shape (n_steps, n_features)
-            replace_method (str): Method to replace off/disabled segment
-            p_off (float): Probability of disabling a segment. Default is 0.5
-            n_samples (int): Number of samples to be generated.
+            x (np.ndarray): A time series with shape (n_steps,) or (n_steps, n_features).
+            segm (np.ndarray): A segmentation mask with the same shape as x.
+            replace_method (str): Method name in ``tsmule.sampling.replace``.
+            p_off (float): Probability of disabling a segment. Defaults to 0.5.
+            n_samples (int): Number of samples to generate. Defaults to 10.
+            random_state (int or np.random.Generator, optional): Random seed or generator.
 
         Yields:
-            Generator: tuples of (new sample, on/off segments, similarity to original)
+            tuple: ``(new_sample, on_off_segments, similarity)``
         """
-        fn = getattr(repl, replace_method)
-        r = fn(x, segm)
+        fn = getattr(repl, replace_method, None)
+        if fn is None or not callable(fn) or replace_method.startswith('_'):
+            raise ValueError(f"Unknown replace_method '{replace_method}'")
+
+        rng = np.random.default_rng(random_state)
+        is_stochastic = replace_method in _STOCHASTIC_REPLACE_METHODS
+        r = None if is_stochastic else fn(x, segm)
 
         for _ in range(n_samples):
-            yield from cls.get_sample(x, segm, r, p_off)
-
+            sample_r = fn(x, segm, random_state=rng) if is_stochastic else r
+            yield from cls.get_sample(x, segm, sample_r, p_off, random_state=rng)
 
     def perturb(self, ts, segments):
-        """Perturb and generate sample sets from given time series and its segmentation.
+        """Perturb and generate sample sets from a time series and its segmentation.
 
         Args:
-            ts (np.ndarray): A time series with shape (n_steps, n_features)
-            segments (np.ndarray): A segmentation of the time series with shape (n_steps, n_features)
+            ts (np.ndarray): A time series with shape (n_steps,) or (n_steps, n_features).
+            segments (np.ndarray): A segmentation mask with the same shape as ts.
 
         Yields:
-            Generator: tuple of (new sample, on/off segments, similarity to original)
+            tuple: ``(new_sample, on_off_segments, similarity)``
         """
-        return self.get_samples(ts, segments,
-                                self.repl_method,
-                                self.p_off,
-                                self.n_samples)
+        return self.get_samples(
+            ts,
+            segments,
+            self.repl_method,
+            self.p_off,
+            self.n_samples,
+            random_state=self.random_state,
+        )
